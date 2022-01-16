@@ -5,9 +5,12 @@ import com.github.bzalyaliev.requests.repository.RequestsEntity;
 import com.github.bzalyaliev.requests.repository.RequestsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/home")
@@ -16,6 +19,7 @@ public class RequestsController {
     private final RequestsRepository requestsRepository;
 
     @PostMapping(value = "/requests/new")
+    @ResponseStatus(HttpStatus.CREATED)
     public void newRequest(@Valid @RequestBody Requests requests) {
         requestsRepository.save(RequestsEntity.builder()
                 .date(requests.getDate())
@@ -35,6 +39,15 @@ public class RequestsController {
         return requestsRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Could not find request"));
     }
+
+
+    @GetMapping(value = "/requests")
+    Iterable allRequests(){
+        return requestsRepository.findAll();
+    }
+
+
+
 
 
 
