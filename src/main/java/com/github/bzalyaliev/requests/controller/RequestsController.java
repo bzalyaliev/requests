@@ -11,16 +11,17 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/home")
+@RequestMapping("/")
 @RequiredArgsConstructor
 public class RequestsController {
     private final RequestsRepository requestsRepository;
 
-    @PostMapping(value = "/requests/new")
+    /*@PostMapping(value = "/requests")
     @ResponseStatus(HttpStatus.CREATED)
-    public void newRequest(@Valid @RequestBody Requests requests) {
+    public String newRequest(@Valid @RequestBody Requests requests) {
         requestsRepository.save(RequestsEntity.builder()
                 .date(requests.getDate())
                 .status(requests.getStatus())
@@ -32,6 +33,26 @@ public class RequestsController {
                 .comments(requests.getComments())
                 .build()
         );
+        return "requests";
+    }*/
+
+    @PostMapping(value = "/requests")
+    public String add(@RequestBody Requests requests, Map<String, Object> model) {
+        requestsRepository.save(RequestsEntity.builder()
+                .date(requests.getDate())
+                .status(requests.getStatus())
+                .originator(requests.getOriginator())
+                .type(requests.getType())
+                .mass(requests.getMass())
+                .deadline(requests.getDeadline())
+                .objective(requests.getObjective())
+                .comments(requests.getComments())
+                .build()
+        );
+
+        Iterable<RequestsEntity> request = requestsRepository.findAll();
+        model.put("requests", request);
+        return "requests";
     }
 
     @GetMapping(value = "/requests/{id}")
@@ -42,16 +63,10 @@ public class RequestsController {
 
 
     @GetMapping(value = "/requests")
-    Iterable allRequests(){
-        return requestsRepository.findAll();
+    public String allRequests(Map<String, Object> model) {
+        Iterable<RequestsEntity> requests = requestsRepository.findAll();
+        model.put("requests", requests);
+        return "requests";
     }
-
-
-
-
-
-
-
-
 
 }
