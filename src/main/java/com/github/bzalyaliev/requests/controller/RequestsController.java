@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ public class RequestsController {
     }*/
 
     @PostMapping(value = "/requests")
-    public String add(@RequestBody Requests requests, Map<String, Object> model) {
+    public ModelAndView add(@RequestBody Requests requests, Map<String, Object> model) {
         requestsRepository.save(RequestsEntity.builder()
                 .date(requests.getDate())
                 .status(requests.getStatus())
@@ -52,7 +53,7 @@ public class RequestsController {
 
         Iterable<RequestsEntity> request = requestsRepository.findAll();
         model.put("requests", request);
-        return "requests";
+        return new ModelAndView("requests", model);
     }
 
     @GetMapping(value = "/requests/{id}")
@@ -63,10 +64,10 @@ public class RequestsController {
 
 
     @GetMapping(value = "/requests")
-    public String allRequests(Map<String, Object> model) {
+    public ModelAndView allRequests(Map<String, Object> model) {
         Iterable<RequestsEntity> requests = requestsRepository.findAll();
         model.put("requests", requests);
-        return "requests";
+        return new ModelAndView("requests", model);
     }
 
 }
