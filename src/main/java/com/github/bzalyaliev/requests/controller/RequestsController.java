@@ -13,12 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/home")
+@RequestMapping("/")
 @RequiredArgsConstructor
 public class RequestsController {
     private final RequestsRepository requestsRepository;
 
-    @PostMapping(value = "/requests/new")
+    @PostMapping(value = "/request")
     @ResponseStatus(HttpStatus.CREATED)
     public void newRequest(@Valid @RequestBody Requests requests) {
         requestsRepository.save(RequestsEntity.builder()
@@ -34,7 +34,7 @@ public class RequestsController {
         );
     }
 
-    @GetMapping(value = "/requests/{id}")
+    @GetMapping(value = "/request/{id}")
     RequestsEntity oneRequest(@PathVariable Long id) {
         return requestsRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Could not find request"));

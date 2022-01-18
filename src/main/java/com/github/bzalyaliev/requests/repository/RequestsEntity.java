@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 @Entity
@@ -23,17 +24,17 @@ public class RequestsEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
     @Column(name = "Date")
-    Date date;
+    ZonedDateTime date;
     @Column(name = "Status")
     Status status;
     @Column(name = "Originator")
-    Originator originator;
+    String originator;
     @Column(name = "Type" )
     Type type;
     @Column(name = "Mass")
     Double mass;
     @Column(name = "Deadline")
-    Date deadline;
+    ZonedDateTime deadline;
     @Column(name = "Objective")
     String objective;
     @Column(name = "Comments")
