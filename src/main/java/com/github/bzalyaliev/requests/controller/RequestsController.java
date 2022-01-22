@@ -6,7 +6,10 @@ import com.github.bzalyaliev.requests.repository.RequestsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.Valid;
+import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/")
@@ -31,31 +34,39 @@ public class RequestsController {
     }
 
     @GetMapping(value = "/request/{id}")
-    RequestsEntity oneRequest(@PathVariable Long id) {
+    public RequestsEntity oneRequest(@PathVariable Long id) {
         return requestsRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Could not find request"));
     }
 
     @GetMapping(value = "/requests")
-    public Iterable allRequests(){
+    public Iterable<RequestsEntity> allRequests() {
         return requestsRepository.findAll();
     }
 
     @DeleteMapping(value = "/request/{id}")
-    void deleteSock(@PathVariable Long id) {
+    public void deleteRequest(@PathVariable Long id) {
         requestsRepository.deleteById(id);
     }
 
     @PatchMapping(value = "/request/{id}")
     public RequestsEntity patchBatch(@PathVariable Long id, @RequestBody Requests requests) {
-        RequestsEntity requestsEntity = requestsRepository.findById(id).get()
-                .setStatus(requests.getStatus())
-                .setOriginator(requests.getOriginator())
-                .setType(requests.getType())
-                .setMass((requests.getMass()))
-                .setObjective((requests.getObjective()))
-                .setDeadline(requests.getDeadline())
-                .setComments((requests.getComments()));
-        return requestsRepository.save(requestsEntity);
+        Optional<RequestsEntity> saved = requestsRepository.findById(id);
+        if (saved.isPresent()){
+            RequestsEntity requestsEntity = requestsRepository.findById(id).get()
+                    .setStatus(requests.getStatus())
+                    .setOriginator(requests.getOriginator())
+                    .setType(requests.getType())
+                    .setMass((requests.getMass()))
+                    .setObjective((requests.getObjective()))
+                    .setDeadline(requests.getDeadline())
+                    .setComments((requests.getComments()));
+            return requestsRepository.save(requestsEntity);
+        }
+        else {
+            throw new NotFoundException("Could not find request");
+        }
     }
+
 }
+
