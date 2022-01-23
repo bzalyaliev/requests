@@ -51,22 +51,20 @@ public class RequestsController {
 
     @PatchMapping(value = "/request/{id}")
     public RequestsEntity patchBatch(@PathVariable Long id, @RequestBody Requests requests) {
-        Optional<RequestsEntity> saved = requestsRepository.findById(id);
-        if (saved.isPresent()){
-            RequestsEntity requestsEntity = requestsRepository.findById(id).get()
-                    .setStatus(requests.getStatus())
-                    .setOriginator(requests.getOriginator())
-                    .setType(requests.getType())
-                    .setMass((requests.getMass()))
-                    .setObjective((requests.getObjective()))
-                    .setDeadline(requests.getDeadline())
-                    .setComments((requests.getComments()));
-            return requestsRepository.save(requestsEntity);
-        }
-        else {
-            throw new NotFoundException("Could not find request");
-        }
+        requestsRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Could not find request"));
+
+        RequestsEntity requestsEntity = requestsRepository.findById(id).get()
+                .setStatus(requests.getStatus())
+                .setOriginator(requests.getOriginator())
+                .setType(requests.getType())
+                .setMass(requests.getMass())
+                .setObjective(requests.getObjective())
+                .setDeadline(requests.getDeadline())
+                .setComments(requests.getComments());
+        return requestsRepository.save(requestsEntity);
     }
 
 }
+
 
