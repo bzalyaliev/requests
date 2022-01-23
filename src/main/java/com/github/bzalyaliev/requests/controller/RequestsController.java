@@ -4,13 +4,12 @@ import com.github.bzalyaliev.requests.model.Requests;
 import com.github.bzalyaliev.requests.repository.RequestsEntity;
 import com.github.bzalyaliev.requests.repository.RequestsRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/")
@@ -35,23 +34,37 @@ public class RequestsController {
     }
 
     @GetMapping(value = "/request/{id}")
-    RequestsEntity oneRequest(@PathVariable Long id) {
+    public RequestsEntity oneRequest(@PathVariable Long id) {
         return requestsRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Could not find request"));
     }
 
-
     @GetMapping(value = "/requests")
-    Iterable allRequests(){
+    public Iterable<RequestsEntity> allRequests() {
         return requestsRepository.findAll();
     }
 
+    @DeleteMapping(value = "/request/{id}")
+    public void deleteRequest(@PathVariable Long id) {
+        requestsRepository.deleteById(id);
+    }
 
+    @PatchMapping(value = "/request/{id}")
+    public RequestsEntity patchBatch(@PathVariable Long id, @RequestBody Requests requests) {
+        requestsRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Could not find request"));
 
-
-
-
-
-
+        RequestsEntity requestsEntity = requestsRepository.findById(id).get()
+                .setStatus(requests.getStatus())
+                .setOriginator(requests.getOriginator())
+                .setType(requests.getType())
+                .setMass(requests.getMass())
+                .setObjective(requests.getObjective())
+                .setDeadline(requests.getDeadline())
+                .setComments(requests.getComments());
+        return requestsRepository.save(requestsEntity);
+    }
 
 }
+
+
