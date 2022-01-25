@@ -10,9 +10,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,8 +24,6 @@ import static org.hamcrest.Matchers.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class RequestsApplicationTests {
 
-    //private static String requestBody = "{\"status\": \"DONE\", \"objective\":\"Test Carbon\", \"type\":\"FLAKE\"}";
-
     @LocalServerPort
     private Integer port;
     @Autowired
@@ -38,7 +34,12 @@ class RequestsApplicationTests {
         RestAssured.port = port;
     }
 
-    /*@Test
+    @AfterEach
+    void deleteAll() {
+        repository.deleteAll();
+    }
+
+    @Test
     void itReturnsRequests() {
         RequestsEntity requestsEntity = RequestsEntity
                 .builder()
@@ -58,22 +59,7 @@ class RequestsApplicationTests {
                 .body("[0].type", equalTo(Type.FLAKES.name()))
                 .body("[0].objective", equalTo("Test Carbon"))
                 .body("[0].status", equalTo(Status.DONE.name()));
-    }*/
-
-
-    /*@Test
-    void itReturnsRequest() {
-        given()
-                .when()
-                .get("/request/1")
-                .then()
-                .statusCode(200)
-                .body("size", is(1))
-                .body("[0].id", equalTo(1))
-                .body("[0].type", equalTo(Type.FLAKES.name()))
-                .body("[0].objective", equalTo("Test Carbon"))
-                .body("[0].status", equalTo(Status.DONE.name()));
-    }*/
+    }
 
     @Test
     void itCreatesRequest() {
@@ -92,6 +78,7 @@ class RequestsApplicationTests {
                 .then()
                 .statusCode(HttpStatus.SC_CREATED)
                 .body(
+                        "id", notNullValue(),
                         "type", equalTo(request.getType().toString()),
                         "status", equalTo(request.getStatus().toString()),
                         "objective", equalTo(request.getObjective())
@@ -100,26 +87,53 @@ class RequestsApplicationTests {
 
     @Test
     void itUpdatesRequest() {
+        RequestsEntity requestsEntity = RequestsEntity
+                .builder()
+                .objective("Test Carbon")
+                .type(Type.FLAKES)
+                .status(Status.DONE)
+                .build();
+        requestsEntity = repository.save(requestsEntity);
+
         Request request = Request
                 .builder()
                 .type(Type.FLAKES)
                 .status(Status.DONE)
-                .objective("Test Carbon Update")
+                .objective("Test Carbon UPDATE")
                 .build();
 
         given()
                 .contentType(ContentType.JSON)
                 .body(request)
                 .when()
-                .patch("/request/1")
+                .patch("/request/" + requestsEntity.getId().toString())
                 .then()
                 .statusCode(HttpStatus.SC_OK)
                 .body(
+                        "id", notNullValue(),
                         "type", equalTo(request.getType().toString()),
                         "status", equalTo(request.getStatus().toString()),
                         "objective", equalTo(request.getObjective())
                 );
     }
+
+    @Test
+    void itDeletesRequest() {
+        RequestsEntity requestsEntity = RequestsEntity
+                .builder()
+                .objective("Test Carbon")
+                .type(Type.FLAKES)
+                .status(Status.DONE)
+                .build();
+        requestsEntity = repository.save(requestsEntity);
+
+        given()
+                .when()
+                .delete("/request/" + requestsEntity.getId().toString())
+                .then()
+                .statusCode(HttpStatus.SC_OK);
+    }
+
 }
 
 

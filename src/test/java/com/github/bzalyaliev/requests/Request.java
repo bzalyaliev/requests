@@ -9,7 +9,6 @@ import java.time.ZonedDateTime;
 
 @Builder
 @Value
-
 public class Request {
     ZonedDateTime date;
     Status status;
