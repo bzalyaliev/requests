@@ -23,6 +23,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Locale;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
@@ -61,6 +62,8 @@ class RequestsApplicationTests {
                 .build();
         requestsEntity = repository.save(requestsEntity);
 
+        System.out.println(requestsEntity.getId().toString() + " " + requestsEntity.getDate() + " " + requestsEntity.getMass() + " " + requestsEntity.getDeadline());
+
         given()
                 .when()
                 .get("/requests")
@@ -69,7 +72,7 @@ class RequestsApplicationTests {
                 .statusCode(200)
                 .body("size", is(1))
                 .body("[0].id", equalTo(requestsEntity.getId().intValue()))
-                .body("[0].date", equalTo(requestsEntity.getDate().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)))
+                .body("[0].date", lessThanOrEqualTo(ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss+03:00"))))
                 .body("[0].status", equalTo(Status.DONE.name()))
                 .body("[0].originator", equalTo("Bulat Zalyaliev"))
                 .body("[0].type", equalTo(Type.FLAKES.name()))
@@ -84,10 +87,17 @@ class RequestsApplicationTests {
     void itCreatesRequest() {
         Request request = Request
                 .builder()
-                .type(Type.FLAKES)
+                .date(ZonedDateTime.now(ZoneId.of("Europe/London")).truncatedTo(ChronoUnit.SECONDS))
                 .status(Status.DONE)
+                .originator("Bulat Zalyaliev")
+                .type(Type.FLAKES)
+                .mass(29.7)
+                .deadline(ZonedDateTime.of(2022, 2, 1, 0, 0, 0, 0, ZoneId.of("Europe/London")).truncatedTo(ChronoUnit.SECONDS))
                 .objective("Test Carbon")
+                .comments("My comment for testing")
                 .build();
+
+        System.out.println(request.getDate() + " " + request.getDeadline());
 
         given()
                 .contentType(ContentType.JSON)
@@ -98,42 +108,63 @@ class RequestsApplicationTests {
                 .statusCode(HttpStatus.SC_CREATED)
                 .body(
                         "id", notNullValue(),
-                        "type", equalTo(request.getType().toString()),
-                        "status", equalTo(request.getStatus().toString()),
-                        "objective", equalTo(request.getObjective())
+                        "date", lessThanOrEqualTo((ZonedDateTime.now(ZoneId.of("Europe/London")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")))),
+                        "status", equalTo(Status.DONE.name()),
+                        "originator", equalTo("Bulat Zalyaliev"),
+                        "type", equalTo(Type.FLAKES.name()),
+                        "mass", equalTo(29.7F),
+                        "deadline", equalTo("2022-02-01T00:00:00Z"),
+                        "objective", equalTo("Test Carbon"),
+                        "comments", equalTo("My comment for testing")
                 );
-
     }
 
     @Test
     void itUpdatesRequest() {
         RequestsEntity requestsEntity = RequestsEntity
                 .builder()
-                .objective("Test Carbon")
-                .type(Type.FLAKES)
+                .date(ZonedDateTime.now().truncatedTo(ChronoUnit.SECONDS))
                 .status(Status.DONE)
+                .originator("Bulat Zalyaliev")
+                .type(Type.POWDER)
+                .mass(35.5)
+                .deadline(ZonedDateTime.of(2022, 2, 01, 0, 0, 0, 0, ZoneId.of("Europe/London")))
+                .objective("Test Carbon")
+                .comments("My comment for testing")
                 .build();
         requestsEntity = repository.save(requestsEntity);
 
-        Request request = Request
+        System.out.println(requestsEntity.getId().toString() + " " + requestsEntity.getDate() + " " + requestsEntity.getMass() + " " + requestsEntity.getDeadline());
+
+        Request updateRequest = Request
                 .builder()
-                .type(Type.FLAKES)
+                .date(ZonedDateTime.now().truncatedTo(ChronoUnit.SECONDS))
                 .status(Status.DONE)
-                .objective("Test Carbon UPDATE")
+                .originator("Adel Zalyaliev")
+                .type(Type.FLAKES)
+                .mass(35.5)
+                .deadline(ZonedDateTime.of(2022, 2, 14, 0, 0, 0, 0, ZoneId.of("Europe/London")))
+                .objective("Test Carbon")
+                .comments("My comment for update testing")
                 .build();
 
         given()
                 .contentType(ContentType.JSON)
-                .body(request)
+                .body(updateRequest)
                 .when()
                 .patch("/request/" + requestsEntity.getId().toString())
                 .then()
                 .statusCode(HttpStatus.SC_OK)
                 .body(
                         "id", notNullValue(),
-                        "type", equalTo(request.getType().toString()),
-                        "status", equalTo(request.getStatus().toString()),
-                        "objective", equalTo(request.getObjective())
+                        "date", lessThanOrEqualTo((ZonedDateTime.now(ZoneId.of("Europe/Moscow")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss+03:00")))),
+                        "status", equalTo(Status.DONE.name()),
+                        "originator", equalTo("Adel Zalyaliev"),
+                        "type", equalTo(Type.FLAKES.name()),
+                        "mass", equalTo(35.5F),
+                        "deadline", equalTo("2022-02-14T00:00:00Z"),
+                        "objective", equalTo("Test Carbon"),
+                        "comments", equalTo("My comment for update testing")
                 );
     }
 
@@ -141,9 +172,14 @@ class RequestsApplicationTests {
     void itDeletesRequest() {
         RequestsEntity requestsEntity = RequestsEntity
                 .builder()
-                .objective("Test Carbon")
-                .type(Type.FLAKES)
+                .date(ZonedDateTime.now().truncatedTo(ChronoUnit.SECONDS))
                 .status(Status.DONE)
+                .originator("Bulat Zalyaliev")
+                .type(Type.FLAKES)
+                .mass(29.7)
+                .deadline(ZonedDateTime.of(2022, 2, 1, 0, 0, 0, 0, ZoneId.of("Europe/Moscow")))
+                .objective("Test Carbon")
+                .comments("My comment for testing")
                 .build();
         requestsEntity = repository.save(requestsEntity);
 
