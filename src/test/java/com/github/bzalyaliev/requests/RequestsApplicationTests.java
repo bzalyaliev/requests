@@ -17,6 +17,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
@@ -43,9 +48,14 @@ class RequestsApplicationTests {
     void itReturnsRequests() {
         RequestsEntity requestsEntity = RequestsEntity
                 .builder()
-                .objective("Test Carbon")
-                .type(Type.FLAKES)
+                .date(ZonedDateTime.of(LocalDateTime.now(), ZoneId.of("Europe/Moscow")))
                 .status(Status.DONE)
+                .originator("Bulat Zalyaliev")
+                .type(Type.FLAKES)
+                .mass(29.7)
+                .deadline(ZonedDateTime.of(2022,2,1,0,0,0,0, ZoneId.of("Europe/Moscow")))
+                .objective("Test Carbon")
+                .comments("My comment for testing")
                 .build();
         requestsEntity = repository.save(requestsEntity);
 
@@ -53,12 +63,19 @@ class RequestsApplicationTests {
                 .when()
                 .get("/requests")
                 .then()
+                .log().all()
                 .statusCode(200)
                 .body("size", is(1))
                 .body("[0].id", equalTo(requestsEntity.getId().intValue()))
+                .body("[0].date", equalTo(ZonedDateTime.of(requestsEntity.getDate().toLocalDateTime(), ZoneId.of("Europe/Moscow"))))
+                .body("[0].status", equalTo(Status.DONE.name()))
+                .body("[0].originator", equalTo("Bulat Zalyaliev"))
                 .body("[0].type", equalTo(Type.FLAKES.name()))
+                .body("[0].mass", equalTo(29.7))
+                .body("[0].deadline", equalTo(ZonedDateTime.of(2022,2,1,0,0,0,0, ZoneId.of("Europe/Moscow"))))
                 .body("[0].objective", equalTo("Test Carbon"))
-                .body("[0].status", equalTo(Status.DONE.name()));
+                .body("[0].comments", equalTo("My comment for testing"))
+                ;
     }
 
     @Test
@@ -83,6 +100,7 @@ class RequestsApplicationTests {
                         "status", equalTo(request.getStatus().toString()),
                         "objective", equalTo(request.getObjective())
                 );
+
     }
 
     @Test
