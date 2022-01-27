@@ -35,6 +35,10 @@ class RequestsApplicationTests {
     private ZonedDateTime deadline = ZonedDateTime.of(2022, 2, 1, 0, 0, 0, 0, ZoneId.systemDefault());
     private ZonedDateTime updateDeadline = ZonedDateTime.of(2022, 2, 14, 0, 0, 0, 0, ZoneId.systemDefault());
 
+    private String currentDateFormatted() {
+        return ZonedDateTime.now(ZoneId.systemDefault()).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+    }
+
     @LocalServerPort
     private Integer port;
     @Autowired
@@ -73,7 +77,7 @@ class RequestsApplicationTests {
                 .statusCode(200)
                 .body("size", is(1))
                 .body("[0].id", equalTo(requestsEntity.getId().intValue()))
-                .body("[0].date", lessThanOrEqualTo(ZonedDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)))
+                .body("[0].date", lessThanOrEqualTo(currentDateFormatted()))
                 .body("[0].status", equalTo(Status.DONE.name()))
                 .body("[0].originator", equalTo("Bulat Zalyaliev"))
                 .body("[0].type", equalTo(Type.FLAKES.name()))
@@ -107,7 +111,7 @@ class RequestsApplicationTests {
                 .statusCode(HttpStatus.SC_CREATED)
                 .body(
                         "id", notNullValue(),
-                        "date", lessThanOrEqualTo((ZonedDateTime.now(ZoneId.systemDefault()).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME))),
+                        "date", lessThanOrEqualTo(currentDateFormatted()),
                         "status", equalTo(Status.DONE.name()),
                         "originator", equalTo("Bulat Zalyaliev"),
                         "type", equalTo(Type.FLAKES.name()),
@@ -154,7 +158,7 @@ class RequestsApplicationTests {
                 .statusCode(HttpStatus.SC_OK)
                 .body(
                         "id", notNullValue(),
-                        "date", lessThanOrEqualTo((ZonedDateTime.now(ZoneId.systemDefault()).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME))),
+                        "date", lessThanOrEqualTo(currentDateFormatted()),
                         "status", equalTo(Status.DONE.name()),
                         "originator", equalTo("Adel Zalyaliev"),
                         "type", equalTo(Type.FLAKES.name()),
