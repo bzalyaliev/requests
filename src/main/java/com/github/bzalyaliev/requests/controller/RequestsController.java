@@ -5,16 +5,17 @@ import com.github.bzalyaliev.requests.repository.RequestsEntity;
 import com.github.bzalyaliev.requests.repository.RequestsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
-import java.util.Optional;
+
 
 
 @RestController
 @RequestMapping("/")
 @RequiredArgsConstructor
+@Validated
 public class RequestsController {
     private final RequestsRepository requestsRepository;
 
@@ -51,7 +52,7 @@ public class RequestsController {
     }
 
     @PatchMapping(value = "/request/{id}")
-    public RequestsEntity patchBatch(@PathVariable Long id, @RequestBody Requests requests) {
+    public RequestsEntity patchBatch(@PathVariable Long id, @Valid @RequestBody Requests requests) {
         requestsRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Could not find request"));
 
