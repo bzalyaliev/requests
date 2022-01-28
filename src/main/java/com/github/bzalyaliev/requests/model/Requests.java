@@ -5,9 +5,9 @@ import com.github.bzalyaliev.requests.repository.Type;
 import lombok.Builder;
 import lombok.Value;
 
-
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 
@@ -16,7 +16,7 @@ import java.time.ZonedDateTime;
 public class Requests {
 
     @NotNull
-    ZonedDateTime date;
+    ZonedDateTime date = ZonedDateTime.now(ZoneId.systemDefault());
 
     @NotNull
     Status status;
@@ -36,6 +36,7 @@ public class Requests {
     @NotNull
     String objective;
 
-
     String comments;
-}
+
+    }
+

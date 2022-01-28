@@ -23,20 +23,28 @@ public class RequestsEntity {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
+
     @Column(name = "Date")
     ZonedDateTime date;
+
     @Column(name = "Status")
     Status status;
+
     @Column(name = "Originator")
     String originator;
-    @Column(name = "Type" )
+
+    @Column(name = "Type")
     Type type;
+
     @Column(name = "Mass")
     Double mass;
+
     @Column(name = "Deadline")
     ZonedDateTime deadline;
+
     @Column(name = "Objective")
     String objective;
+
     @Column(name = "Comments")
     String comments;
 
