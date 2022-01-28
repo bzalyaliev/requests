@@ -1,8 +1,22 @@
 import './App.css';
-import {Link} from "react-router-dom";
-import {Component} from "react";
+import {BrowserRouter} from "react-router-dom";
+import NavigationBar from "./components/navigation-bar";
+import Router from "./router";
+import {Container} from "@material-ui/core";
 
-class App extends Component {
+function App() {
+    return (
+        <BrowserRouter>
+            <NavigationBar />
+            <Container>
+                <Router />
+            </Container>
+        </BrowserRouter>
+    );
+}
+
+export default App;
+/*class App extends Component {
     render() {
         return (
             <div className="App">
@@ -13,13 +27,17 @@ class App extends Component {
                     </ul>
                 </div>
                 <div className="App-intro">
-                    {/*  <Route path={'/request/:id'} component={RequestPage}/>
+                        <Routes>
+                            <Route path={'/request'} exact={true} component={NewRequestPage}/>
+                            <Route render={() => <Navigate to="/" />} />
+                        </Routes>
+                    {/!*  <Route path={'/request/:id'} component={RequestPage}/>
                         <Route path={'/request'} exact={true} component={NewRequestPage}/>
-                        <Route path={'/requests'} exact={true} component={RequestsPage}/>*/}
+                        <Route path={'/requests'} exact={true} component={RequestsPage}/>*!/}
                 </div>
             </div>
         )
     };
 }
 
-export default App;
+export default App;*/
