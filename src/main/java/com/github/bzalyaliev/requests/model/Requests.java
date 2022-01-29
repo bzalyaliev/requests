@@ -27,6 +27,7 @@ public class Requests {
     @NotNull
     Type type;
 
+    @NotNull
     @Positive
     Double mass;
 

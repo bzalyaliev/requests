@@ -24,25 +24,25 @@ public class RequestsEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
 
-    @Column(name = "Date")
+    @Column(name = "Date", nullable = false)
     ZonedDateTime date;
 
-    @Column(name = "Status")
+    @Column(name = "Status", nullable = false)
     Status status;
 
-    @Column(name = "Originator")
+    @Column(name = "Originator", nullable = false)
     String originator;
 
-    @Column(name = "Type")
+    @Column(name = "Type", nullable = false)
     Type type;
 
-    @Column(name = "Mass")
+    @Column(name = "Mass", nullable = false)
     Double mass;
 
-    @Column(name = "Deadline")
+    @Column(name = "Deadline", nullable = false)
     ZonedDateTime deadline;
 
-    @Column(name = "Objective")
+    @Column(name = "Objective", nullable = false)
     String objective;
 
     @Column(name = "Comments")
