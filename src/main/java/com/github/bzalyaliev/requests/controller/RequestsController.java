@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -19,8 +20,8 @@ public class RequestsController {
 
     @PostMapping(value = "/request")
     @ResponseStatus(HttpStatus.CREATED)
-    public void newRequest(@Valid @RequestBody Requests requests) {
-        requestsRepository.save(RequestsEntity.builder()
+    public RequestsEntity newRequest(@Valid @RequestBody Requests requests) {
+        return requestsRepository.save(RequestsEntity.builder()
                 .date(requests.getDate())
                 .status(requests.getStatus())
                 .originator(requests.getOriginator())
