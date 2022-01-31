@@ -38,10 +38,17 @@ Rejected - Красный
 ----------------------------------
 ##To do
 1. REST API.
-2. Test containers and PostgreSQL. Переезд с H2.
+   1. bean validation v2
+   2. exception handling v4
+   3. pagination v3
+   4. sorting
+   5. filtering
+2. Переезд с H2.
+   1. Приложение стартует и коннектиться к локальной PostgreSQL
+   2. Приложение имеет компонентные тесты в которых коннектиться к PostgreSQL test-containers
 3. Контейнеризация.
 4. Pipeline. Деплой на сервер.
-5. Тесты.
+5. Опытно-промышленная эксплуатация.
 6. Сообщения по заявкам?
 
 # Общие технические требования
