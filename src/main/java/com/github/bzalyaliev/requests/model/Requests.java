@@ -16,7 +16,7 @@ import java.time.ZonedDateTime;
 public class Requests {
 
     @NotNull
-    ZonedDateTime date = ZonedDateTime.now(ZoneId.systemDefault());
+    ZonedDateTime date;
 
     @NotNull
     Status status;

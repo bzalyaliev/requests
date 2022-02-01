@@ -9,7 +9,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 
 @RestController
@@ -23,7 +24,7 @@ public class RequestsController {
     @ResponseStatus(HttpStatus.CREATED)
     public RequestsEntity newRequest(@Valid @RequestBody Requests requests) {
         return requestsRepository.save(RequestsEntity.builder()
-                .date(requests.getDate())
+                .date(ZonedDateTime.now(ZoneId.systemDefault()))
                 .status(requests.getStatus())
                 .originator(requests.getOriginator())
                 .type(requests.getType())

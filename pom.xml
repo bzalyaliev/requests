@@ -64,8 +64,6 @@
             <artifactId>rest-assured</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.github.eirslett/frontend-maven-plugin -->
-
     </dependencies>
 
     <build>
