@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
 

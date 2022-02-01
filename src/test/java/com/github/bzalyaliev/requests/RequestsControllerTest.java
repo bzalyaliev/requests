@@ -44,7 +44,7 @@ class RequestsControllerTest {
             .comments("My comment for testing")
             .build();
 
-    Request nullRequest = Request
+    private final Request nullRequest = Request
             .builder()
             .date(ZonedDateTime.now())
             .status(null)
@@ -56,7 +56,7 @@ class RequestsControllerTest {
             .comments(null)
             .build();
 
-    Request request = Request
+    private final Request request = Request
             .builder()
             .date(ZonedDateTime.now(ZoneId.systemDefault()))
             .status(Status.DONE)
@@ -68,7 +68,7 @@ class RequestsControllerTest {
             .comments("My comment for testing")
             .build();
 
-    Request updateRequest = Request
+    private final Request updateRequest = Request
             .builder()
             .date(ZonedDateTime.now())
             .status(Status.DONE)
