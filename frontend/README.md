@@ -68,3 +68,17 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+----
+
+### How to rebuild frontend-for-backend in a fast way
+
+```shell
+#from frontend dir
+#build frontend code to have it in ./frontend/build
+yarn build
+
+#fron root dir
+rm -rf ./target/classes/static
+cp -R ./frontend/build/ ./target/classes/static
+```
