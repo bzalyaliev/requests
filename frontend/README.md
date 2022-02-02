@@ -74,11 +74,8 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 ### How to rebuild frontend-for-backend in a fast way
 
 ```shell
-#from frontend dir
-#build frontend code to have it in ./frontend/build
-yarn build
-
-#fron root dir
-rm -rf ./target/classes/static
-cp -R ./frontend/build/ ./target/classes/static
+sh ./infrastructure/rebuild-frontend-for-backend.sh
 ```
+
+And just enjoy it! Any changes applied to frontend has been moved to the backend, no need of restart. Just refresh the page to see it.
+You can run spring-boot app in Idea as usual as well

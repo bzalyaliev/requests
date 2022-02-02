@@ -12,24 +12,5 @@ const Router = () => {
             <Route path="/request" element={<NewRequestPage />} />
         </Routes>
     );
-
-    /* object-based routes
-    return useRoutes([
-      { path: "/", element: <LandingPage /> },
-      { path: "games", element: <Games /> },
-      { path: "game-details/:id", element: <GameDetails /> },
-      {
-        path: "dashboard",
-        element: <Dashboard />,
-        children: [
-          { path: "/", element: <DashboardDefaultContent /> },
-          { path: "inbox", element: <Inbox /> },
-          { path: "settings-and-privacy", element: <SettingsAndPrivacy /> },
-          { path: "*", element: <NotFound /> },
-        ],
-      },
-      { path: "*", element: <NotFound /> },
-    ]);
-  */
 };
 export default Router;
