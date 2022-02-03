@@ -33,5 +33,4 @@ public class RequestsRepositoryTest {
         assertThatThrownBy(() -> repository.saveAndFlush(requestNull))
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
-
 }
