@@ -50,10 +50,10 @@ public class RequestsController {
                 .orElseThrow(() -> new NotFoundException("Could not find request"));
     }
 
-    /*@GetMapping(value = "/requests")
+    @GetMapping(value = "/requests")
     public Iterable<RequestsEntity> allRequests() {
         return requestsRepository.findAll();
-    }*/
+    }
 
     @DeleteMapping(value = "/request/{id}")
     public void deleteRequest(@PathVariable Long id) {
@@ -75,61 +75,8 @@ public class RequestsController {
                 .setComments(requests.getComments());
         return requestsRepository.save(requestsEntity);
     }
-
-    @GetMapping("/requests")
-    public ResponseEntity<Map<String, Object>> getAllRequests(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "3") int size
-    ) {
-
-        try {
-            List<RequestsEntity> requests = new ArrayList<RequestsEntity>();
-            Pageable paging = PageRequest.of(page, size);
-
-            Page<RequestsEntity> pageRequests;
-            pageRequests = requestsRepository.findAll(paging);
-          
-
-            requests = pageRequests.getContent();
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("requests", requests);
-            response.put("currentPage", pageRequests.getNumber());
-            response.put("totalItems", pageRequests.getTotalElements());
-            response.put("totalPages", pageRequests.getTotalPages());
-
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
 
-    /*@GetMapping("/requests/published")
-    public ResponseEntity<Map<String, Object>> findByPublished(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "3") int size
-    ) {
-        try {
-            List<Tutorial> requests = new ArrayList<Tutorial>();
-            Pageable paging = PageRequest.of(page, size);
-
-            Page<Tutorial> pageRequests = tutorialRepository.findByPublished(true, paging);
-            requests = pageRequests.getContent();
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("requests", requests);
-            response.put("currentPage", pageRequests.getNumber());
-            response.put("totalItems", pageRequests.getTotalElements());
-            response.put("totalPages", pageRequests.getTotalPages());
-
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-  ...
-}*/
-}
 
 
 

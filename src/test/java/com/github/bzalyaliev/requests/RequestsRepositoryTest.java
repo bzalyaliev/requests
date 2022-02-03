@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
-import static org.hamcrest.Matchers.equalTo;
+import java.util.List;
 
 @DataJpaTest
 public class RequestsRepositoryTest {
@@ -38,23 +36,8 @@ public class RequestsRepositoryTest {
     @Test
     void itReturnsNullRequests() {
         RequestsEntity requestsEntity = repository.save(requestNull);
-        given()
-                .when()
-                .get("/requests")
-                .then()
-                .log().all()
-                .statusCode(200)
-                .body("size", is(1))
-                .body("[0].id", equalTo(requestsEntity.getId().intValue()))
-                .body("[0].date", notNullValue())
-                .body("[0].status", notNullValue())
-                .body("[0].originator", notNullValue())
-                .body("[0].type", notNullValue())
-                .body("[0].mass", notNullValue())
-                .body("[0].deadline", notNullValue())
-                .body("[0].objective", notNullValue())
-                .body("[0].comments", equalTo("My comment for testing"))
-        ;
+        List<RequestsEntity> nullResult = repository.findAll();
+        System.out.println(nullResult);
     }
 
 }
