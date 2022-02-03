@@ -6,10 +6,7 @@ import com.github.bzalyaliev.requests.repository.Status;
 import com.github.bzalyaliev.requests.repository.Type;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import org.apache.http.HttpStatus;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,27 +14,71 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.util.Locale;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class RequestsApplicationTests {
+class RequestsControllerTest {
 
-    private ZonedDateTime deadline = ZonedDateTime.of(2022, 2, 1, 0, 0, 0, 0, ZoneId.systemDefault());
-    private ZonedDateTime updateDeadline = ZonedDateTime.of(2022, 2, 14, 0, 0, 0, 0, ZoneId.systemDefault());
+    private final ZonedDateTime deadline = ZonedDateTime.of(2022, 2, 1, 0, 0, 0, 0, ZoneId.systemDefault());
+    private final ZonedDateTime updateDeadline = ZonedDateTime.of(2022, 2, 14, 0, 0, 0, 0, ZoneId.systemDefault());
 
     private String currentDateFormatted() {
         return ZonedDateTime.now(ZoneId.systemDefault()).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
     }
+
+    RequestsEntity requestsEntity = RequestsEntity
+            .builder()
+            .date(ZonedDateTime.now())
+            .status(Status.DONE)
+            .originator("Bulat Zalyaliev")
+            .type(Type.FLAKES)
+            .mass(29.7)
+            .deadline(deadline)
+            .objective("Test Carbon")
+            .comments("My comment for testing")
+            .build();
+
+    private final Request nullRequest = Request
+            .builder()
+            .date(ZonedDateTime.now())
+            .status(null)
+            .originator(null)
+            .type(null)
+            .mass(null)
+            .deadline(null)
+            .objective(null)
+            .comments(null)
+            .build();
+
+    private final Request request = Request
+            .builder()
+            .date(ZonedDateTime.now(ZoneId.systemDefault()))
+            .status(Status.DONE)
+            .originator("Bulat Zalyaliev")
+            .type(Type.FLAKES)
+            .mass(29.7)
+            .deadline(deadline)
+            .objective("Test Carbon")
+            .comments("My comment for testing")
+            .build();
+
+    private final Request updateRequest = Request
+            .builder()
+            .date(ZonedDateTime.now())
+            .status(Status.DONE)
+            .originator("Adel Zalyaliev")
+            .type(Type.FLAKES)
+            .mass(35.5)
+            .deadline(updateDeadline)
+            .objective("Test Carbon")
+            .comments("My comment for update testing")
+            .build();
 
     @LocalServerPort
     private Integer port;
@@ -56,19 +97,7 @@ class RequestsApplicationTests {
 
     @Test
     void itReturnsRequests() {
-        RequestsEntity requestsEntity = RequestsEntity
-                .builder()
-                .date(ZonedDateTime.now())
-                .status(Status.DONE)
-                .originator("Bulat Zalyaliev")
-                .type(Type.FLAKES)
-                .mass(29.7)
-                .deadline(deadline)
-                .objective("Test Carbon")
-                .comments("My comment for testing")
-                .build();
         requestsEntity = repository.save(requestsEntity);
-
         given()
                 .when()
                 .get("/requests")
@@ -90,18 +119,6 @@ class RequestsApplicationTests {
 
     @Test
     void itCreatesRequest() {
-        Request request = Request
-                .builder()
-                .date(ZonedDateTime.now(ZoneId.systemDefault()))
-                .status(Status.DONE)
-                .originator("Bulat Zalyaliev")
-                .type(Type.FLAKES)
-                .mass(29.7)
-                .deadline(deadline)
-                .objective("Test Carbon")
-                .comments("My comment for testing")
-                .build();
-
         given()
                 .contentType(ContentType.JSON)
                 .body(request)
@@ -124,31 +141,7 @@ class RequestsApplicationTests {
 
     @Test
     void itUpdatesRequest() {
-        RequestsEntity requestsEntity = RequestsEntity
-                .builder()
-                .date(ZonedDateTime.now())
-                .status(Status.DONE)
-                .originator("Bulat Zalyaliev")
-                .type(Type.POWDER)
-                .mass(35.5)
-                .deadline(deadline)
-                .objective("Test Carbon")
-                .comments("My comment for testing")
-                .build();
         requestsEntity = repository.save(requestsEntity);
-
-        Request updateRequest = Request
-                .builder()
-                .date(ZonedDateTime.now())
-                .status(Status.DONE)
-                .originator("Adel Zalyaliev")
-                .type(Type.FLAKES)
-                .mass(35.5)
-                .deadline(updateDeadline)
-                .objective("Test Carbon")
-                .comments("My comment for update testing")
-                .build();
-
         given()
                 .contentType(ContentType.JSON)
                 .body(updateRequest)
@@ -171,19 +164,7 @@ class RequestsApplicationTests {
 
     @Test
     void itDeletesRequest() {
-        RequestsEntity requestsEntity = RequestsEntity
-                .builder()
-                .date(ZonedDateTime.now())
-                .status(Status.DONE)
-                .originator("Bulat Zalyaliev")
-                .type(Type.FLAKES)
-                .mass(29.7)
-                .deadline(deadline)
-                .objective("Test Carbon")
-                .comments("My comment for testing")
-                .build();
         requestsEntity = repository.save(requestsEntity);
-
         given()
                 .when()
                 .delete("/request/" + requestsEntity.getId())
@@ -191,6 +172,29 @@ class RequestsApplicationTests {
                 .statusCode(HttpStatus.SC_OK);
     }
 
-}
+    @Test
+    void itCreatesNullRequest() {
+        given()
+                .contentType(ContentType.JSON)
+                .body(nullRequest)
+                .when()
+                .post("/request")
+                .then()
+                .statusCode(400)
+        ;
+    }
 
+    @Test
+    void itUpdatesNullRequest() {
+        requestsEntity = repository.save(requestsEntity);
+        given()
+                .contentType(ContentType.JSON)
+                .body(nullRequest)
+                .when()
+                .patch("/request/" + requestsEntity.getId().toString())
+                .then()
+                .statusCode(400)
+        ;
+    }
+}
 
