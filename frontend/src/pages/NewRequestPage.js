@@ -26,27 +26,33 @@ class NewRequestPage extends Component {
     }
 
     handleTypeChange(event) {
-        this.setState({
-            newRequest: {
-                type: event.value
-            }
-        });
+        this.setState(prevState => ({
+                newRequest: {
+                    ...prevState.newRequest,
+                    type: event.value
+                }
+            })
+        );
     }
 
     handleStatusChange(event) {
-        this.setState({
-            newRequest: {
-                status: event.value
-            }
-        });
+        this.setState(prevState => ({
+                newRequest: {
+                    ...prevState.newRequest,
+                    status: event.value
+                }
+            })
+        );
     }
 
     handleDeadlineChange(event) {
-        this.setState({
-            newRequest: {
-                deadline: event
-            }
-        });
+        this.setState(prevState => ({
+                newRequest: {
+                    ...prevState.newRequest,
+                    deadline: event
+                }
+            })
+        );
     }
 
     handleSubmit(event) {
@@ -83,27 +89,46 @@ class NewRequestPage extends Component {
             <form onSubmit={this.handleSubmit}>
                 <label>
                     Инициатор:
-                    <input name="newRequest.originator" type="text" onChange={this.handleChange} value={this.state.newRequest.originator}/>
+                    <input name="newRequest.originator" type="text" onChange={this.handleChange}
+                           value={this.state.newRequest.originator}/>
                 </label>
-                <Dropdown options={['FLAKES', 'POWDER']} onChange={this.handleTypeChange}
-                          value={this.state.newRequest.type}
-                          placeholder="Выбери тип:"/>;
-                <Dropdown options={['GENERATED', 'IN_WORK', 'DONE', 'CANCELLED', 'REJECTED']}
-                          onChange={this.handleStatusChange}
-                          value={this.state.newRequest.status} placeholder="Выбери тип:"/>;
+                <br/>
+                <label>
+                    Тип:
+                    <Dropdown options={['FLAKES', 'POWDER']}
+                              onChange={this.handleTypeChange}
+                              value={this.state.newRequest.type}
+                              placeholder="Выберите тип:"/>
+                </label>
+                <br/>
+                <label>
+                    Статус:
+                    <Dropdown options={['GENERATED', 'IN_WORK', 'DONE', 'CANCELLED', 'REJECTED']}
+                              onChange={this.handleStatusChange}
+                              value={this.state.newRequest.status}
+                              placeholder="Выберите статус:"/>
+                </label>
+                <br/>
                 <MyDatePicker/>
+                <br/>
                 <label>
                     Масса:
-                    <input name="newRequest.mass" type="number" onChange={this.handleChange} value={this.state.newRequest.mass}/>
+                    <input name="newRequest.mass" type="number" onChange={this.handleChange}
+                           value={this.state.newRequest.mass}/>
                 </label>
+                <br/>
                 <label>
                     Задача:
-                    <input name="newRequest.objective" type="text" onChange={this.handleChange} value={this.state.newRequest.objective}/>
+                    <input name="newRequest.objective" type="text" onChange={this.handleChange}
+                           value={this.state.newRequest.objective}/>
                 </label>
+                <br/>
                 <label>
                     Комментарии:
-                    <input name="newRequest.comments" type="text" onChange={this.handleChange} value={this.state.newRequest.comments}/>
+                    <input name="newRequest.comments" type="text" onChange={this.handleChange}
+                           value={this.state.newRequest.comments}/>
                 </label>
+                <br/>
                 <input type="submit" value="Submit"/>
             </form>
         </div>
