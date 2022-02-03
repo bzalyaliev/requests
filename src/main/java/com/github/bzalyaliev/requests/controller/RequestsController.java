@@ -4,17 +4,27 @@ import com.github.bzalyaliev.requests.model.Requests;
 import com.github.bzalyaliev.requests.repository.RequestsEntity;
 import com.github.bzalyaliev.requests.repository.RequestsRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 
 @RestController
 @RequestMapping("/")
 @RequiredArgsConstructor
+@Validated
 public class RequestsController {
     private final RequestsRepository requestsRepository;
 
@@ -22,7 +32,7 @@ public class RequestsController {
     @ResponseStatus(HttpStatus.CREATED)
     public RequestsEntity newRequest(@Valid @RequestBody Requests requests) {
         return requestsRepository.save(RequestsEntity.builder()
-                .date(requests.getDate())
+                .date(ZonedDateTime.now(ZoneId.systemDefault()))
                 .status(requests.getStatus())
                 .originator(requests.getOriginator())
                 .type(requests.getType())
@@ -51,7 +61,7 @@ public class RequestsController {
     }
 
     @PatchMapping(value = "/request/{id}")
-    public RequestsEntity patchBatch(@PathVariable Long id, @RequestBody Requests requests) {
+    public RequestsEntity patchBatch(@PathVariable Long id, @Valid @RequestBody Requests requests) {
         requestsRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Could not find request"));
 
@@ -65,7 +75,8 @@ public class RequestsController {
                 .setComments(requests.getComments());
         return requestsRepository.save(requestsEntity);
     }
+    }
 
-}
+
 
 
