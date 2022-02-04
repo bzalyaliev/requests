@@ -9,7 +9,9 @@ class NewRequestPage extends Component {
         super(props);
         this.state = {
             requests: [],
-            newRequest: {}
+            newRequest: {
+                deadLine: new Date()
+            }
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -20,9 +22,14 @@ class NewRequestPage extends Component {
     }
 
     handleChange(e) {
-        this.setState({
-            [e.target.name]: e.target.value
-        });
+        const key = e.target.name.split('.')[1]
+        this.setState(prevState => ({
+                newRequest: {
+                    ...prevState.newRequest,
+                    [key]: e.target.value
+                }
+            })
+        );
     }
 
     handleTypeChange(event) {
@@ -57,20 +64,17 @@ class NewRequestPage extends Component {
 
     handleSubmit(event) {
         alert('Отправляем запрос на новую заявку');
+        const requestBody = {
+            ...this.state.newRequest,
+            mass: parseFloat(this.state.newRequest.mass)
+        };
         fetch('/api/request', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                    originator: this.state.newRequest.originator,
-                    type: this.state.newRequest.type,
-                    deadline: this.state.newRequest.deadline,
-                    objective: this.state.newRequest.objective,
-                    comments: this.state.newRequest.comments
-                }
-            )
+            body: JSON.stringify(requestBody)
         })
             .then(response => response.json())
             .catch(e => console.log(e))
@@ -113,7 +117,7 @@ class NewRequestPage extends Component {
                 <br/>
                 <label>
                     Масса:
-                    <input name="newRequest.mass" type="number" onChange={this.handleChange}
+                    <input name="newRequest.mass" type="number" step=".01" onChange={this.handleChange}
                            value={this.state.newRequest.mass}/>
                 </label>
                 <br/>

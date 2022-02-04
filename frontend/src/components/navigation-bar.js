@@ -8,7 +8,6 @@ import Box from "@material-ui/core/Box";
 
 export default function NavigationBar() {
     const classes = useStyles();
-    const [login, setLogin] = useState(false);
     return (
         <AppBar position="static" className={classes.appBar}>
             <Box
@@ -19,21 +18,17 @@ export default function NavigationBar() {
                 <Toolbar>
                     <Typography variant="h6" className={classes.title}>
                         <Link to="/" className={classes.link}>
-                            Home
+                            Главная
                         </Link>
                     </Typography>
                     <Typography variant="h6" className={classes.title}>
-                        <Link to="/games" className={classes.link}>
-                            Games
+                        <Link to="/request" className={classes.link}>
+                            Новый запрос
                         </Link>
                     </Typography>
                     <Typography variant="h6" className={classes.title}>
-                        <Link
-                            onClick={() => setLogin(true)}
-                            to="/dashboard"
-                            className={classes.link}
-                        >
-                            {!login ? "Login" : "Dashboard"}
+                        <Link to="/requests" className={classes.link}>
+                            Все запросы
                         </Link>
                     </Typography>
                 </Toolbar>

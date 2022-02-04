@@ -6,10 +6,7 @@ class Home extends Component {
     render() {
         return (
             <div>
-                <Container fluid>
-                  {/*  <Button color="link"><Link to="/requests">Все запросы</Link></Button>*/}
-                    <Button color="link"><Link to="/request">Новый запрос</Link></Button>
-                </Container>
+                Нужно добавить сюда описание!
             </div>
         );
     }
