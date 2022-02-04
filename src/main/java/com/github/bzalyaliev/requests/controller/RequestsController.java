@@ -4,6 +4,7 @@ import com.github.bzalyaliev.requests.model.Requests;
 import com.github.bzalyaliev.requests.repository.RequestsEntity;
 import com.github.bzalyaliev.requests.repository.RequestsRepository;
 import com.github.bzalyaliev.requests.repository.Status;
+import com.github.bzalyaliev.requests.repository.Type;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,7 +38,7 @@ public class RequestsController {
     public RequestsEntity newRequest(@Valid @RequestBody Requests requests) {
         return requestsRepository.save(RequestsEntity.builder()
                 .date(ZonedDateTime.now(ZoneId.systemDefault()))
-                .status(requests.getStatus())
+                .status(Status.GENERATED)
                 .originator(requests.getOriginator())
                 .type(requests.getType())
                 .mass(requests.getMass())

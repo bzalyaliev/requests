@@ -15,7 +15,6 @@ import java.time.ZonedDateTime;
 @Builder
 public class Requests {
 
-    @NotNull
     Status status;
 
     @NotNull
