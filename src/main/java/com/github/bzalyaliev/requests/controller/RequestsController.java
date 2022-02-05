@@ -3,13 +3,10 @@ package com.github.bzalyaliev.requests.controller;
 import com.github.bzalyaliev.requests.model.Requests;
 import com.github.bzalyaliev.requests.repository.RequestsEntity;
 import com.github.bzalyaliev.requests.repository.RequestsRepository;
-import com.github.bzalyaliev.requests.repository.Status;
-import com.github.bzalyaliev.requests.repository.Type;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -31,14 +28,12 @@ import java.util.Map;
 public class RequestsController {
     private final RequestsRepository requestsRepository;
 
-    List<Status> orders = List.of(Status.GENERATED, Status.IN_WORK, Status.DONE, Status.CANCELLED, Status.REJECTED);
-
     @PostMapping(value = "/request")
     @ResponseStatus(HttpStatus.CREATED)
     public RequestsEntity newRequest(@Valid @RequestBody Requests requests) {
         return requestsRepository.save(RequestsEntity.builder()
                 .date(ZonedDateTime.now(ZoneId.systemDefault()))
-                .status(Status.GENERATED)
+                .status(requests.getStatus())
                 .originator(requests.getOriginator())
                 .type(requests.getType())
                 .mass(requests.getMass())
@@ -53,6 +48,11 @@ public class RequestsController {
     public RequestsEntity oneRequest(@PathVariable Long id) {
         return requestsRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Could not find request"));
+    }
+
+    @GetMapping(value = "/requests")
+    public Iterable<RequestsEntity> allRequests() {
+        return requestsRepository.findAll();
     }
 
     @DeleteMapping(value = "/request/{id}")
@@ -75,30 +75,7 @@ public class RequestsController {
                 .setComments(requests.getComments());
         return requestsRepository.save(requestsEntity);
     }
-
-    @GetMapping("/requests")
-    public ResponseEntity<Map<String, Object>> getAllRequests(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size
-    ) {
-        try {
-            Pageable paging = PageRequest.of(page, size);
-            Page<RequestsEntity> pageRequests = requestsRepository.findAll(paging);
-            List<RequestsEntity> requests = pageRequests.getContent();
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("requests", requests);
-            response.put("currentPage", pageRequests.getNumber());
-            response.put("totalItems", pageRequests.getTotalElements());
-            response.put("totalPages", pageRequests.getTotalPages());
-
-            return new ResponseEntity<>(response, HttpStatus.OK);
-
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
-}
 
 
 
