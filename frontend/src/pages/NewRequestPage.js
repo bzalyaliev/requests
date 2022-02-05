@@ -73,7 +73,7 @@ class NewRequestPage extends Component {
     render() {
         const MyDatePicker = () => {
             return (
-                <DatePicker selected={this.state.newRequest.deadline} onChange={this.handleDeadlineChange}/>
+                <DatePicker selected={this.state.newRequest.deadline} onChange={this.handleDeadlineChange} required/>
             );
         };
 
@@ -83,7 +83,7 @@ class NewRequestPage extends Component {
                     Инициатор:
                     <br/>
                     <input name="newRequest.originator" type="text" onChange={this.handleChange}
-                           value={this.state.newRequest.originator}/>
+                           value={this.state.newRequest.originator} required/>
                 </label>
                 <br/>
                 <label>
@@ -91,7 +91,7 @@ class NewRequestPage extends Component {
                     <Dropdown options={['FLAKES', 'POWDER']}
                               onChange={this.handleTypeChange}
                               value={this.state.newRequest.type}
-                              placeholder="Выберите тип:"/>
+                              placeholder="Выберите тип:" required/>
                 </label>
                 <br/>
                 <label>
@@ -103,14 +103,14 @@ class NewRequestPage extends Component {
                     Масса:
                     <br/>
                     <input name="newRequest.mass" type="number" step=".01" onChange={this.handleChange}
-                           value={this.state.newRequest.mass}/>
+                           value={this.state.newRequest.mass} required/>
                 </label>
                 <br/>
                 <label>
                     Задача:
                     <br/>
                     <textarea name="newRequest.objective" cols="50" rows="5" onChange={this.handleChange}
-                           value={this.state.newRequest.objective}/>
+                           value={this.state.newRequest.objective} required/>
                 </label>
                 <br/>
                 <label>
