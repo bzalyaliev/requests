@@ -143,7 +143,7 @@ class NewRequestPage extends Component {
                               value={this.state.newRequest.comments}/>
                 </label>
                 <br/>
-                <input type="submit" value="Submit"/>
+                <input type="submit" value="Отправить"/>
             </form>
             <ResponseHandler response={this.state.response}/>
         </div>
@@ -161,7 +161,8 @@ const ResponseHandler = ({response}) => {
             )
         } else {
             return <div role="success">
-                Запрос успешно отправлен
+                Запрос успешно отправлен. ID вашей заявки:
+                <pre>{response.id}</pre>
             </div>
         }
     }
