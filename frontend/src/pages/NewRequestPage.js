@@ -10,14 +10,13 @@ class NewRequestPage extends Component {
         this.state = {
             requests: [],
             newRequest: {
-                deadLine: new Date()
+                deadline: new Date()
             }
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleTypeChange = this.handleTypeChange.bind(this);
-        this.handleStatusChange = this.handleStatusChange.bind(this);
         this.handleDeadlineChange = this.handleDeadlineChange.bind(this);
     }
 
@@ -37,16 +36,6 @@ class NewRequestPage extends Component {
                 newRequest: {
                     ...prevState.newRequest,
                     type: event.value
-                }
-            })
-        );
-    }
-
-    handleStatusChange(event) {
-        this.setState(prevState => ({
-                newRequest: {
-                    ...prevState.newRequest,
-                    status: event.value
                 }
             })
         );
@@ -83,9 +72,8 @@ class NewRequestPage extends Component {
 
     render() {
         const MyDatePicker = () => {
-            const [startDate] = useState(new Date());
             return (
-                <DatePicker selected={startDate} onChange={this.handleDeadlineChange}/>
+                <DatePicker selected={this.state.newRequest.deadline} onChange={this.handleDeadlineChange}/>
             );
         };
 
@@ -93,6 +81,7 @@ class NewRequestPage extends Component {
             <form onSubmit={this.handleSubmit}>
                 <label>
                     Инициатор:
+                    <br/>
                     <input name="newRequest.originator" type="text" onChange={this.handleChange}
                            value={this.state.newRequest.originator}/>
                 </label>
@@ -106,30 +95,28 @@ class NewRequestPage extends Component {
                 </label>
                 <br/>
                 <label>
-                    Статус:
-                    <Dropdown options={['GENERATED', 'IN_WORK', 'DONE', 'CANCELLED', 'REJECTED']}
-                              onChange={this.handleStatusChange}
-                              value={this.state.newRequest.status}
-                              placeholder="Выберите статус:"/>
+                    Срок завершения:
+                    <MyDatePicker/>
                 </label>
-                <br/>
-                <MyDatePicker/>
                 <br/>
                 <label>
                     Масса:
+                    <br/>
                     <input name="newRequest.mass" type="number" step=".01" onChange={this.handleChange}
                            value={this.state.newRequest.mass}/>
                 </label>
                 <br/>
                 <label>
                     Задача:
-                    <input name="newRequest.objective" type="text" onChange={this.handleChange}
+                    <br/>
+                    <textarea name="newRequest.objective" cols="50" rows="5" onChange={this.handleChange}
                            value={this.state.newRequest.objective}/>
                 </label>
                 <br/>
                 <label>
                     Комментарии:
-                    <input name="newRequest.comments" type="text" onChange={this.handleChange}
+                    <br/>
+                    <textarea name="newRequest.comments" cols="30" rows="2" onChange={this.handleChange}
                            value={this.state.newRequest.comments}/>
                 </label>
                 <br/>
