@@ -65,15 +65,38 @@ class NewRequestPage extends Component {
             },
             body: JSON.stringify(requestBody)
         })
-            .then(response => response.json())
-            .catch(e => console.log(e))
+            .then(response => {
+                if (response.status !== 201) {
+                    throw {
+                        error: {
+                            status: response.status
+                        }
+                    }
+                } else {
+                    return response.json()
+                }
+            })
+            .then(newRequest => {
+                this.setState(prevState => ({
+                    ...prevState,
+                    response: newRequest
+                }))
+            })
+            .catch(error => {
+                console.log(error)
+                this.setState(prevState => ({
+                    ...prevState,
+                    response: error
+                }))
+            })
         event.preventDefault();
     }
 
     render() {
         const MyDatePicker = () => {
             return (
-                <DatePicker selected={this.state.newRequest.deadline} onChange={this.handleDeadlineChange} required/>
+                <DatePicker selected={this.state.newRequest.deadline} dateFormat="dd.MM.yyyy"
+                            onChange={this.handleDeadlineChange} required/>
             );
         };
 
@@ -103,27 +126,46 @@ class NewRequestPage extends Component {
                     Масса:
                     <br/>
                     <input name="newRequest.mass" type="number" step=".01" onChange={this.handleChange}
-                           value={this.state.newRequest.mass} required/>
+                           value={this.state.newRequest.mass} placeholder="10.12" required/>
                 </label>
                 <br/>
                 <label>
                     Задача:
                     <br/>
                     <textarea name="newRequest.objective" cols="50" rows="5" onChange={this.handleChange}
-                           value={this.state.newRequest.objective} required/>
+                              value={this.state.newRequest.objective} required/>
                 </label>
                 <br/>
                 <label>
                     Комментарии:
                     <br/>
                     <textarea name="newRequest.comments" cols="30" rows="2" onChange={this.handleChange}
-                           value={this.state.newRequest.comments}/>
+                              value={this.state.newRequest.comments}/>
                 </label>
                 <br/>
                 <input type="submit" value="Submit"/>
             </form>
+            <ResponseHandler response={this.state.response}/>
         </div>
     }
+}
+
+const ResponseHandler = ({response}) => {
+    if (response) {
+        if (response.error) {
+            return (
+                <div role="alert">
+                    <p>Получена ошибка:</p>
+                    <pre>{response.error.status}</pre>
+                </div>
+            )
+        } else {
+            return <div role="success">
+                Запрос успешно отправлен
+            </div>
+        }
+    }
+    return <div/>
 }
 
 export default NewRequestPage;
