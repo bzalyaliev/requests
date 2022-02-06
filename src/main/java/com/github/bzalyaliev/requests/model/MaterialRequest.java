@@ -7,15 +7,12 @@ import lombok.Value;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 
 @Value
 @Builder
-public class Requests {
-
-    Status status;
+public class MaterialRequest {
 
     @NotNull
     String originator;

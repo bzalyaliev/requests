@@ -71,9 +71,9 @@ Rejected - Красный
 
 *Pagination*
 
-1. На endpoint'е `/requests` сервис должен возвращать N сущностей разбитых на страницы. Смотри https://www.bezkoder.com/spring-boot-pagination-filter-jpa-pageable/
+1. На endpoint'е `/materialRequest` сервис должен возвращать N сущностей разбитых на страницы. Смотри https://www.bezkoder.com/spring-boot-pagination-filter-jpa-pageable/
 ```shell
-GET http://localhost:8080/requests?page=1&size=5
+GET http://localhost:8080/materialRequest?page=1&size=5
 ```
 Возвращает
 ```shell
@@ -81,7 +81,7 @@ GET http://localhost:8080/requests?page=1&size=5
   "totalElements": 10,
   "totalPages:" 2,
   "currentPage": 1,
-  "requests": [
+  "materialRequest": [
      {
        ... request1 ...
      },
