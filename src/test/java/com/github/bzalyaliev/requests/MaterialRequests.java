@@ -9,7 +9,7 @@ import java.time.ZonedDateTime;
 
 @Builder
 @Value
-public class Request {
+public class MaterialRequests {
     ZonedDateTime date;
     Status status;
     String originator;

@@ -1,6 +1,5 @@
 package com.github.bzalyaliev.requests.model;
 
-import com.github.bzalyaliev.requests.repository.Status;
 import com.github.bzalyaliev.requests.repository.Type;
 import lombok.Builder;
 import lombok.Value;
@@ -12,7 +11,7 @@ import java.time.ZonedDateTime;
 
 @Value
 @Builder
-public class MaterialRequest {
+public class MaterialRequests {
 
     @NotNull
     String originator;
@@ -32,5 +31,5 @@ public class MaterialRequest {
 
     String comments;
 
-    }
+}
 

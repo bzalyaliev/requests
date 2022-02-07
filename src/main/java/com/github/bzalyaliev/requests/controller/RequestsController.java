@@ -1,7 +1,7 @@
 package com.github.bzalyaliev.requests.controller;
 
-import com.github.bzalyaliev.requests.model.MaterialRequest;
-import com.github.bzalyaliev.requests.model.MaterialRequestPageInfo;
+import com.github.bzalyaliev.requests.model.MaterialRequests;
+import com.github.bzalyaliev.requests.model.MaterialRequestsPageInfo;
 import com.github.bzalyaliev.requests.repository.RequestsEntity;
 import com.github.bzalyaliev.requests.repository.RequestsRepository;
 import com.github.bzalyaliev.requests.repository.Status;
@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -18,9 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 @RestController
@@ -32,16 +29,16 @@ public class RequestsController {
 
     @PostMapping(value = "/request")
     @ResponseStatus(HttpStatus.CREATED)
-    public RequestsEntity newRequest(@Valid @RequestBody MaterialRequest materialRequest) {
+    public RequestsEntity newRequest(@Valid @RequestBody MaterialRequests materialRequests) {
         return requestsRepository.save(RequestsEntity.builder()
                 .date(ZonedDateTime.now(ZoneId.systemDefault()))
                 .status(Status.GENERATED)
-                .originator(materialRequest.getOriginator())
-                .type(materialRequest.getType())
-                .mass(materialRequest.getMass())
-                .deadline(materialRequest.getDeadline())
-                .objective(materialRequest.getObjective())
-                .comments(materialRequest.getComments())
+                .originator(materialRequests.getOriginator())
+                .type(materialRequests.getType())
+                .mass(materialRequests.getMass())
+                .deadline(materialRequests.getDeadline())
+                .objective(materialRequests.getObjective())
+                .comments(materialRequests.getComments())
                 .build()
         );
     }
@@ -58,22 +55,22 @@ public class RequestsController {
     }
 
     @PatchMapping(value = "/request/{id}")
-    public RequestsEntity patchBatch(@PathVariable Long id, @Valid @RequestBody MaterialRequest materialRequest) {
+    public RequestsEntity patchBatch(@PathVariable Long id, @Valid @RequestBody MaterialRequests materialRequests) {
         requestsRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Could not find request"));
 
         RequestsEntity requestsEntity = requestsRepository.findById(id).get()
-                .setOriginator(materialRequest.getOriginator())
-                .setType(materialRequest.getType())
-                .setMass(materialRequest.getMass())
-                .setObjective(materialRequest.getObjective())
-                .setDeadline(materialRequest.getDeadline())
-                .setComments(materialRequest.getComments());
+                .setOriginator(materialRequests.getOriginator())
+                .setType(materialRequests.getType())
+                .setMass(materialRequests.getMass())
+                .setObjective(materialRequests.getObjective())
+                .setDeadline(materialRequests.getDeadline())
+                .setComments(materialRequests.getComments());
         return requestsRepository.save(requestsEntity);
     }
 
     @GetMapping("/requests")
-    public ResponseEntity<MaterialRequestPageInfo> getAllRequests(
+    public ResponseEntity<MaterialRequestsPageInfo> getAllRequests(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size
     ) {
@@ -81,7 +78,7 @@ public class RequestsController {
         Page<RequestsEntity> pageRequests = requestsRepository.findAll(paging);
         List<RequestsEntity> requests = pageRequests.getContent();
 
-        MaterialRequestPageInfo materialRequestPageInfo = MaterialRequestPageInfo
+        MaterialRequestsPageInfo materialRequestsPageInfo = MaterialRequestsPageInfo
                 .builder()
                 .requests(requests)
                 .totalElements(pageRequests.getTotalElements())
@@ -89,7 +86,7 @@ public class RequestsController {
                 .currentPage(pageRequests.getNumber())
                 .build();
 
-        return new ResponseEntity<>(materialRequestPageInfo, HttpStatus.OK);
+        return new ResponseEntity<>(materialRequestsPageInfo, HttpStatus.OK);
 
     }
 

@@ -23,7 +23,7 @@ import static org.hamcrest.Matchers.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class MaterialRequestControllerTest {
+class MaterialRequestsControllerTest {
 
     private final ZonedDateTime deadline = ZonedDateTime.of(2022, 2, 1, 0, 0, 0, 0, ZoneId.systemDefault());
     private final ZonedDateTime updateDeadline = ZonedDateTime.of(2022, 2, 14, 0, 0, 0, 0, ZoneId.systemDefault());
@@ -44,7 +44,7 @@ class MaterialRequestControllerTest {
             .comments("My comment for testing")
             .build();
 
-    private final Request nullRequest = Request
+    private final MaterialRequests nullMaterialRequests = MaterialRequests
             .builder()
             .date(ZonedDateTime.now())
             .status(null)
@@ -56,7 +56,7 @@ class MaterialRequestControllerTest {
             .comments(null)
             .build();
 
-    private final Request request = Request
+    private final MaterialRequests materialRequests = MaterialRequests
             .builder()
             .date(ZonedDateTime.now(ZoneId.systemDefault()))
             .status(Status.DONE)
@@ -68,7 +68,7 @@ class MaterialRequestControllerTest {
             .comments("My comment for testing")
             .build();
 
-    private final Request updateRequest = Request
+    private final MaterialRequests updateMaterialRequests = MaterialRequests
             .builder()
             .date(ZonedDateTime.now())
             .status(Status.DONE)
@@ -121,7 +121,7 @@ class MaterialRequestControllerTest {
     void itCreatesRequest() {
         given()
                 .contentType(ContentType.JSON)
-                .body(request)
+                .body(materialRequests)
                 .when()
                 .post("/request")
                 .then()
@@ -144,7 +144,7 @@ class MaterialRequestControllerTest {
         requestsEntity = repository.save(requestsEntity);
         given()
                 .contentType(ContentType.JSON)
-                .body(updateRequest)
+                .body(updateMaterialRequests)
                 .when()
                 .patch("/request/" + requestsEntity.getId().toString())
                 .then()
@@ -176,7 +176,7 @@ class MaterialRequestControllerTest {
     void itCreatesNullRequest() {
         given()
                 .contentType(ContentType.JSON)
-                .body(nullRequest)
+                .body(nullMaterialRequests)
                 .when()
                 .post("/request")
                 .then()
@@ -189,7 +189,7 @@ class MaterialRequestControllerTest {
         requestsEntity = repository.save(requestsEntity);
         given()
                 .contentType(ContentType.JSON)
-                .body(nullRequest)
+                .body(nullMaterialRequests)
                 .when()
                 .patch("/request/" + requestsEntity.getId().toString())
                 .then()
