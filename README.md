@@ -94,7 +94,7 @@ GET http://localhost:8080/requests?page=1&size=5
 
 ## V4 требования. Exception handling + sorting
 
-1. Exception handling
+1. Exception handling, смотри `@ControllerAdvise`
 * В случае ошибки сервис должен возвращать подходящий HTTP статус код, отличный от 200, или 500 по-умолчанию
 * Тело ответа с ошибкой должно выглядит следующим образом:
 ```json
