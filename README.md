@@ -42,7 +42,7 @@ Rejected - Красный
    2. exception handling v4
    3. pagination v3
    4. sorting v4
-   5. filtering
+   5. ~~filtering~~
 2. Переезд с H2.
    1. Приложение стартует и коннектиться к локальной PostgreSQL
    2. Приложение имеет компонентные тесты в которых коннектиться к PostgreSQL test-containers
@@ -116,3 +116,10 @@ GET http://localhost:8080/requests?sort=status,asc&sort=date,desc
 * если `sort=status` не передан, но другие sort переданы, то сортировка только по тем полям, что запрашивает клиент
 * в случае если sort передан следующим образом `sort=status`, то неявно добавляется `asc` или `desc` для всех запросов. Не важно какой, главное чтобы один и тотже
 * в случае если sort передан следующим образом `sort=unexpected` с неожиданным значением, то эндпоинт возвращает 400 bad request
+
+
+## V5 требования. PostgreSQL migration
+
+1. Приложение коннектиться к локальной PostgreSQL при старте вместо h2 базы данных
+* Репозиторий содержит инструкции: как развернуть postgresql
+* В тестах приложение подключается к реальной базе данных PostgreSQL, которая стартует в контейнере, смотри https://github.com/Playtika/testcontainers-spring-boot
