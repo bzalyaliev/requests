@@ -36,58 +36,21 @@ Rejected - Красный
 10. Первая строка должна быть зафиксирована. Остальные строки должны иметь возможность прокручиваться.
 
 ----------------------------------
-##To do
-1. REST API.
-   1. bean validation v2
-   2. exception handling v4
-   3. pagination v3
-   4. sorting
-   5. filtering
-2. Переезд с H2.
-   1. Приложение стартует и коннектиться к локальной PostgreSQL
-   2. Приложение имеет компонентные тесты в которых коннектиться к PostgreSQL test-containers
-3. Контейнеризация.
-4. Pipeline. Деплой на сервер.
-5. Опытно-промышленная эксплуатация.
-6. Сообщения по заявкам?
+### How to run
 
-# Общие технические требования
-1. Заявки могут создавать только люди, которые существуют только в БД, если запрос с неизвестной фамилией, то возвращаем 400.
-2. Nullability. 
-2.1 В базу данных некоторые поля могут сохраняться как NULL.
-2.2. Для полей, которые не могут быть NULL возвращаем ошибку 400, если NULL.
-3. Заявки могут создаваться только типов, которые существуют только в БД, если запрос с неизвестным типом, то возвращаем 400.
+1. Idea:
 
-## V2 требования
+* Run RequestsApplication class as usual
+* Build frontend-for-backend running from the root dir: `sh ./infrastructure/rebuild-frontend-for-backend.sh`
+* Enjoy at http://localhost:8080
 
-*Bean validation*
+2. As standalone jar
 
-1. Для полей, которые не могут быть NULL возвращаем ошибку 400, если NULL. Должно быть реализовано с использованием
-[bean validation](https://reflectoring.io/bean-validation-with-spring-boot/) то есть запрос не должен дойти до контроллера, а упасть с ошибкой раньше
-2. База данных не должна допускать сохранения в столбцы, которые не могут быть null значение типа null. См. https://www.baeldung.com/hibernate-notnull-vs-nullable
-Это уровень базы данных, то есть отличная имплементация от пункта 1, можно проверить написанием теста на репозиторий, используя аннотацию `@DataJpaTest` над классом теста
-
-## V3 требования
-
-*Pagination*
-
-1. На endpoint'е `/requests` сервис должен возвращать N сущностей разбитых на страницы. Смотри https://www.bezkoder.com/spring-boot-pagination-filter-jpa-pageable/
+* Build it
 ```shell
-GET http://localhost:8080/requests?page=1&size=5
+./mvnw clean package -Dmaven.test.skip=true
+
+java -jar ./target/requests-0.0.1-SNAPSHOT.jar
 ```
-Возвращает
-```shell
-{
-  "totalElements": 10,
-  "totalPages:" 2,
-  "currentPage": 1,
-  "requests": [
-     {
-       ... request1 ...
-     },
-     {
-       ... request1 ...
-     }
-  ]
-}
-```
+
+* Enjoy at http://localhost:8080
