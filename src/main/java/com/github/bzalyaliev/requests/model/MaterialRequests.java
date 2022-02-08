@@ -13,7 +13,7 @@ import java.time.ZonedDateTime;
 
 @Value
 @Builder
-public class Requests {
+public class MaterialRequests {
 
     @NotNull
     Status status;

@@ -1,6 +1,7 @@
 package com.github.bzalyaliev.requests.controller;
 
-import com.github.bzalyaliev.requests.model.Requests;
+import com.github.bzalyaliev.requests.model.MaterialRequests;
+
 import com.github.bzalyaliev.requests.repository.RequestsEntity;
 import com.github.bzalyaliev.requests.repository.RequestsRepository;
 import com.github.bzalyaliev.requests.repository.Status;
@@ -8,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,16 +33,16 @@ public class RequestsController {
 
     @PostMapping(value = "/request")
     @ResponseStatus(HttpStatus.CREATED)
-    public RequestsEntity newRequest(@Valid @RequestBody Requests requests) {
+    public RequestsEntity newRequest(@Valid @RequestBody MaterialRequests materialRequests) {
         return requestsRepository.save(RequestsEntity.builder()
                 .date(ZonedDateTime.now(ZoneId.systemDefault()))
-                .status(requests.getStatus())
-                .originator(requests.getOriginator())
-                .type(requests.getType())
-                .mass(requests.getMass())
-                .deadline(requests.getDeadline())
-                .objective(requests.getObjective())
-                .comments(requests.getComments())
+                .status(materialRequests.getStatus())
+                .originator(materialRequests.getOriginator())
+                .type(materialRequests.getType())
+                .mass(materialRequests.getMass())
+                .deadline(materialRequests.getDeadline())
+                .objective(materialRequests.getObjective())
+                .comments(materialRequests.getComments())
                 .build()
         );
     }
@@ -60,7 +59,7 @@ public class RequestsController {
     }
 
     @PatchMapping(value = "/request/{id}")
-    public RequestsEntity patchBatch(@PathVariable Long id, @Valid @RequestBody Requests requests) {
+    public RequestsEntity patchBatch(@PathVariable Long id, @Valid @RequestBody MaterialRequests requests) {
         requestsRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Could not find request"));
 
