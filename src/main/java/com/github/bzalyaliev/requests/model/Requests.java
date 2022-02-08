@@ -1,40 +1,36 @@
 package com.github.bzalyaliev.requests.model;
 
-import com.github.bzalyaliev.requests.repository.Status;
-import com.github.bzalyaliev.requests.repository.Type;
-import lombok.Builder;
-import lombok.Value;
+import java.time.ZonedDateTime;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+
+import com.github.bzalyaliev.requests.repository.Type;
+import lombok.Builder;
+import lombok.Value;
 
 
 @Value
 @Builder
 public class Requests {
 
-    @NotNull
-    Status status;
+	@NotNull
+	String originator;
 
-    @NotNull
-    String originator;
+	@NotNull
+	Type type;
 
-    @NotNull
-    Type type;
+	@NotNull
+	@Positive
+	Double mass;
 
-    @NotNull
-    @Positive
-    Double mass;
+	@NotNull
+	ZonedDateTime deadline;
 
-    @NotNull
-    ZonedDateTime deadline;
+	@NotNull
+	String objective;
 
-    @NotNull
-    String objective;
+	String comments;
 
-    String comments;
-
-    }
+}
 
