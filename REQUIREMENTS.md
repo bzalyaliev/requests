@@ -91,3 +91,37 @@ GET http://localhost:8080/requests?page=1&size=5
   ]
 }
 ```
+
+## V4 требования. Exception handling + sorting
+
+1. Exception handling, смотри `@ControllerAdvise`
+* В случае ошибки сервис должен возвращать подходящий HTTP статус код, отличный от 200, или 500 по-умолчанию
+* Тело ответа с ошибкой должно выглядит следующим образом:
+```json
+{
+   "error": {
+      "type": "NotFoundException", // имя класса сокращенное
+      "detailedMessage": "Сущность не найдена", // #exception.getMessage()
+      "status": 404
+   }
+}
+```
+
+2. Sorting, смотри https://www.bezkoder.com/spring-boot-pagination-sorting-example/
+* Эндпоинт имеет возможность возвращать сортированный результат по полям: status, date и deadline. По-умолчанию (без переданных query параметров), он всегда сортирует по статусу
+```shell
+# пример контракта
+GET http://localhost:8080/requests?sort=status,asc&sort=date,desc
+```
+* если `sort=status` не передан, но другие sort переданы, то сортировка только по тем полям, что запрашивает клиент
+* в случае если sort передан следующим образом `sort=status`, то неявно добавляется `asc` или `desc` для всех запросов. Не важно какой, главное чтобы один и тотже
+* в случае если sort передан следующим образом `sort=unexpected` с неожиданным значением, то эндпоинт возвращает 400 bad request
+* эндпоинт ожидает N query параметроов sort
+
+
+## V5 требования. PostgreSQL migration
+
+1. Приложение коннектиться к локальной PostgreSQL при старте вместо h2 базы данных
+* Репозиторий содержит инструкции: как развернуть postgresql
+* В тестах приложение подключается к реальной базе данных PostgreSQL, которая стартует в контейнере, смотри https://github.com/Playtika/testcontainers-spring-boot
+
