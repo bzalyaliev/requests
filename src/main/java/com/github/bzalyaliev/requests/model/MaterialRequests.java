@@ -7,12 +7,13 @@ import lombok.Value;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 
 @Value
 @Builder
-public class MaterialRequests {
+public class Requests {
 
     @NotNull
     Status status;
@@ -35,5 +36,5 @@ public class MaterialRequests {
 
     String comments;
 
-}
+    }
 
