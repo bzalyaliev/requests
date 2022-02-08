@@ -23,7 +23,7 @@ import static org.hamcrest.Matchers.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class RequestsControllerTest {
+class MaterialRequestsControllerTest {
 
     private final ZonedDateTime deadline = ZonedDateTime.of(2022, 2, 1, 0, 0, 0, 0, ZoneId.systemDefault());
     private final ZonedDateTime updateDeadline = ZonedDateTime.of(2022, 2, 14, 0, 0, 0, 0, ZoneId.systemDefault());
@@ -35,7 +35,7 @@ class RequestsControllerTest {
     RequestsEntity requestsEntity = RequestsEntity
             .builder()
             .date(ZonedDateTime.now())
-            .status(Status.DONE)
+            .status(Status.GENERATED)
             .originator("Bulat Zalyaliev")
             .type(Type.FLAKES)
             .mass(29.7)
@@ -44,7 +44,7 @@ class RequestsControllerTest {
             .comments("My comment for testing")
             .build();
 
-    private final Request nullRequest = Request
+    private final MaterialRequests nullMaterialRequests = MaterialRequests
             .builder()
             .date(ZonedDateTime.now())
             .status(null)
@@ -56,10 +56,10 @@ class RequestsControllerTest {
             .comments(null)
             .build();
 
-    private final Request request = Request
+    private final MaterialRequests materialRequests = MaterialRequests
             .builder()
             .date(ZonedDateTime.now(ZoneId.systemDefault()))
-            .status(Status.DONE)
+            .status(Status.GENERATED)
             .originator("Bulat Zalyaliev")
             .type(Type.FLAKES)
             .mass(29.7)
@@ -68,7 +68,7 @@ class RequestsControllerTest {
             .comments("My comment for testing")
             .build();
 
-    private final Request updateRequest = Request
+    private final MaterialRequests updateMaterialRequests = MaterialRequests
             .builder()
             .date(ZonedDateTime.now())
             .status(Status.DONE)
@@ -82,6 +82,7 @@ class RequestsControllerTest {
 
     @LocalServerPort
     private Integer port;
+
     @Autowired
     RequestsRepository repository;
 
@@ -104,16 +105,18 @@ class RequestsControllerTest {
                 .then()
                 .log().all()
                 .statusCode(200)
-                .body("size", is(1))
-                .body("[0].id", equalTo(requestsEntity.getId().intValue()))
-                .body("[0].date", lessThanOrEqualTo(currentDateFormatted()))
-                .body("[0].status", equalTo(Status.DONE.name()))
-                .body("[0].originator", equalTo("Bulat Zalyaliev"))
-                .body("[0].type", equalTo(Type.FLAKES.name()))
-                .body("[0].mass", equalTo(29.7F))
-                .body("[0].deadline", equalTo(deadline.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)))
-                .body("[0].objective", equalTo("Test Carbon"))
-                .body("[0].comments", equalTo("My comment for testing"))
+                .body("totalElements", equalTo(1))
+                .body("currentPage", equalTo(0))
+                .body("totalPages", equalTo(1))
+                .body("requests.id[0]", equalTo(requestsEntity.getId().intValue()))
+                .body("requests.date[0]", lessThanOrEqualTo(currentDateFormatted()))
+                .body("requests.status[0]", equalTo(Status.GENERATED.name()))
+                .body("requests.originator[0]", equalTo("Bulat Zalyaliev"))
+                .body("requests.type[0]", equalTo(Type.FLAKES.name()))
+                .body("requests.mass[0]", equalTo(29.7F))
+                .body("requests.deadline[0]", equalTo(deadline.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)))
+                .body("requests.objective[0]", equalTo("Test Carbon"))
+                .body("requests.comments[0]", equalTo("My comment for testing"))
         ;
     }
 
@@ -121,7 +124,7 @@ class RequestsControllerTest {
     void itCreatesRequest() {
         given()
                 .contentType(ContentType.JSON)
-                .body(request)
+                .body(materialRequests)
                 .when()
                 .post("/request")
                 .then()
@@ -129,7 +132,7 @@ class RequestsControllerTest {
                 .body(
                         "id", notNullValue(),
                         "date", lessThanOrEqualTo(currentDateFormatted()),
-                        "status", equalTo(Status.DONE.name()),
+                        "status", equalTo(Status.GENERATED.name()),
                         "originator", equalTo("Bulat Zalyaliev"),
                         "type", equalTo(Type.FLAKES.name()),
                         "mass", equalTo(29.7F),
@@ -144,7 +147,7 @@ class RequestsControllerTest {
         requestsEntity = repository.save(requestsEntity);
         given()
                 .contentType(ContentType.JSON)
-                .body(updateRequest)
+                .body(updateMaterialRequests)
                 .when()
                 .patch("/request/" + requestsEntity.getId().toString())
                 .then()
@@ -176,7 +179,7 @@ class RequestsControllerTest {
     void itCreatesNullRequest() {
         given()
                 .contentType(ContentType.JSON)
-                .body(nullRequest)
+                .body(nullMaterialRequests)
                 .when()
                 .post("/request")
                 .then()
@@ -189,7 +192,7 @@ class RequestsControllerTest {
         requestsEntity = repository.save(requestsEntity);
         given()
                 .contentType(ContentType.JSON)
-                .body(nullRequest)
+                .body(nullMaterialRequests)
                 .when()
                 .patch("/request/" + requestsEntity.getId().toString())
                 .then()

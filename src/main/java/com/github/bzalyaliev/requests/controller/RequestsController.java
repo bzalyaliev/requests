@@ -1,58 +1,47 @@
 package com.github.bzalyaliev.requests.controller;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.github.bzalyaliev.requests.model.MaterialRequests;
 
-import javax.validation.Valid;
-
-import com.github.bzalyaliev.requests.model.Requests;
+import com.github.bzalyaliev.requests.model.MaterialRequestsPageInfo;
 import com.github.bzalyaliev.requests.repository.RequestsEntity;
 import com.github.bzalyaliev.requests.repository.RequestsRepository;
 import com.github.bzalyaliev.requests.repository.Status;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/")
 @RequiredArgsConstructor
 @Validated
 public class RequestsController {
     private final RequestsRepository requestsRepository;
 
-    List<Status> orders = List.of(Status.GENERATED, Status.IN_WORK, Status.DONE, Status.CANCELLED, Status.REJECTED);
-
     @PostMapping(value = "/request")
     @ResponseStatus(HttpStatus.CREATED)
-    public RequestsEntity newRequest(@Valid @RequestBody Requests requests) {
+    public RequestsEntity newRequest(@Valid @RequestBody MaterialRequests materialRequests) {
         return requestsRepository.save(RequestsEntity.builder()
                 .date(ZonedDateTime.now(ZoneId.systemDefault()))
                 .status(Status.GENERATED)
-                .originator(requests.getOriginator())
-                .type(requests.getType())
-                .mass(requests.getMass())
-                .deadline(requests.getDeadline())
-                .objective(requests.getObjective())
-                .comments(requests.getComments())
+                .originator(materialRequests.getOriginator())
+                .type(materialRequests.getType())
+                .mass(materialRequests.getMass())
+                .deadline(materialRequests.getDeadline())
+                .objective(materialRequests.getObjective())
+                .comments(materialRequests.getComments())
                 .build()
         );
     }
@@ -69,12 +58,12 @@ public class RequestsController {
     }
 
     @PatchMapping(value = "/request/{id}")
-    public RequestsEntity patchBatch(@PathVariable Long id, @Valid @RequestBody Requests requests) {
+    public RequestsEntity patchBatch(@PathVariable Long id, @Valid @RequestBody MaterialRequests requests) {
         requestsRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Could not find request"));
 
         RequestsEntity requestsEntity = requestsRepository.findById(id).get()
-                .setStatus(Status.GENERATED)
+                .setStatus(requests.getStatus())
                 .setOriginator(requests.getOriginator())
                 .setType(requests.getType())
                 .setMass(requests.getMass())
@@ -85,26 +74,24 @@ public class RequestsController {
     }
 
     @GetMapping("/requests")
-    public ResponseEntity<Map<String, Object>> getAllRequests(
+    public ResponseEntity<MaterialRequestsPageInfo> getAllRequests(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size
     ) {
-        try {
-            Pageable paging = PageRequest.of(page, size);
-            Page<RequestsEntity> pageRequests = requestsRepository.findAll(paging);
-            List<RequestsEntity> requests = pageRequests.getContent();
+        Pageable paging = PageRequest.of(page, size);
+        Page<RequestsEntity> pageRequests = requestsRepository.findAll(paging);
+        List<RequestsEntity> requests = pageRequests.getContent();
 
-            Map<String, Object> response = new HashMap<>();
-            response.put("requests", requests);
-            response.put("currentPage", pageRequests.getNumber());
-            response.put("totalItems", pageRequests.getTotalElements());
-            response.put("totalPages", pageRequests.getTotalPages());
+        MaterialRequestsPageInfo materialRequestPageInfo = MaterialRequestsPageInfo
+                .builder()
+                .requests(requests)
+                .totalElements(pageRequests.getTotalElements())
+                .totalPages(pageRequests.getTotalPages())
+                .currentPage(pageRequests.getNumber())
+                .build();
 
-            return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(materialRequestPageInfo, HttpStatus.OK);
 
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
 }
 

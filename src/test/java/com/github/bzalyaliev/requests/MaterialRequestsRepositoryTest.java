@@ -11,7 +11,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
-public class RequestsRepositoryTest {
+public class MaterialRequestsRepositoryTest {
 
     RequestsEntity requestNull = RequestsEntity
             .builder()
@@ -33,4 +33,6 @@ public class RequestsRepositoryTest {
         assertThatThrownBy(() -> repository.saveAndFlush(requestNull))
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
+
+
 }
