@@ -35,7 +35,7 @@ class MaterialRequestsControllerTest {
     RequestsEntity requestsEntity = RequestsEntity
             .builder()
             .date(ZonedDateTime.now())
-            .status(Status.DONE)
+            .status(Status.GENERATED)
             .originator("Bulat Zalyaliev")
             .type(Type.FLAKES)
             .mass(29.7)
@@ -59,7 +59,7 @@ class MaterialRequestsControllerTest {
     private final MaterialRequests materialRequests = MaterialRequests
             .builder()
             .date(ZonedDateTime.now(ZoneId.systemDefault()))
-            .status(Status.DONE)
+            .status(Status.GENERATED)
             .originator("Bulat Zalyaliev")
             .type(Type.FLAKES)
             .mass(29.7)
@@ -82,6 +82,7 @@ class MaterialRequestsControllerTest {
 
     @LocalServerPort
     private Integer port;
+
     @Autowired
     RequestsRepository repository;
 
@@ -104,16 +105,18 @@ class MaterialRequestsControllerTest {
                 .then()
                 .log().all()
                 .statusCode(200)
-                .body("size", is(1))
-                .body("[0].id", equalTo(requestsEntity.getId().intValue()))
-                .body("[0].date", lessThanOrEqualTo(currentDateFormatted()))
-                .body("[0].status", equalTo(Status.DONE.name()))
-                .body("[0].originator", equalTo("Bulat Zalyaliev"))
-                .body("[0].type", equalTo(Type.FLAKES.name()))
-                .body("[0].mass", equalTo(29.7F))
-                .body("[0].deadline", equalTo(deadline.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)))
-                .body("[0].objective", equalTo("Test Carbon"))
-                .body("[0].comments", equalTo("My comment for testing"))
+                .body("totalElements", equalTo(1))
+                .body("currentPage", equalTo(0))
+                .body("totalPages", equalTo(1))
+                .body("requests.id[0]", equalTo(requestsEntity.getId().intValue()))
+                .body("requests.date[0]", lessThanOrEqualTo(currentDateFormatted()))
+                .body("requests.status[0]", equalTo(Status.GENERATED.name()))
+                .body("requests.originator[0]", equalTo("Bulat Zalyaliev"))
+                .body("requests.type[0]", equalTo(Type.FLAKES.name()))
+                .body("requests.mass[0]", equalTo(29.7F))
+                .body("requests.deadline[0]", equalTo(deadline.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)))
+                .body("requests.objective[0]", equalTo("Test Carbon"))
+                .body("requests.comments[0]", equalTo("My comment for testing"))
         ;
     }
 
@@ -129,7 +132,7 @@ class MaterialRequestsControllerTest {
                 .body(
                         "id", notNullValue(),
                         "date", lessThanOrEqualTo(currentDateFormatted()),
-                        "status", equalTo(Status.DONE.name()),
+                        "status", equalTo(Status.GENERATED.name()),
                         "originator", equalTo("Bulat Zalyaliev"),
                         "type", equalTo(Type.FLAKES.name()),
                         "mass", equalTo(29.7F),

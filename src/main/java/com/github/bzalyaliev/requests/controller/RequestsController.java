@@ -2,6 +2,7 @@ package com.github.bzalyaliev.requests.controller;
 
 import com.github.bzalyaliev.requests.model.MaterialRequests;
 
+import com.github.bzalyaliev.requests.model.MaterialRequestsPageInfo;
 import com.github.bzalyaliev.requests.repository.RequestsEntity;
 import com.github.bzalyaliev.requests.repository.RequestsRepository;
 import com.github.bzalyaliev.requests.repository.Status;
@@ -29,14 +30,12 @@ import java.util.Map;
 public class RequestsController {
     private final RequestsRepository requestsRepository;
 
-    List<Status> orders = List.of(Status.GENERATED, Status.IN_WORK, Status.DONE, Status.CANCELLED, Status.REJECTED);
-
     @PostMapping(value = "/request")
     @ResponseStatus(HttpStatus.CREATED)
     public RequestsEntity newRequest(@Valid @RequestBody MaterialRequests materialRequests) {
         return requestsRepository.save(RequestsEntity.builder()
                 .date(ZonedDateTime.now(ZoneId.systemDefault()))
-                .status(materialRequests.getStatus())
+                .status(Status.GENERATED)
                 .originator(materialRequests.getOriginator())
                 .type(materialRequests.getType())
                 .mass(materialRequests.getMass())
@@ -75,26 +74,24 @@ public class RequestsController {
     }
 
     @GetMapping("/requests")
-    public ResponseEntity<Map<String, Object>> getAllRequests(
+    public ResponseEntity<MaterialRequestsPageInfo> getAllRequests(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size
     ) {
-        try {
-            Pageable paging = PageRequest.of(page, size);
-            Page<RequestsEntity> pageRequests = requestsRepository.findAll(paging);
-            List<RequestsEntity> requests = pageRequests.getContent();
+        Pageable paging = PageRequest.of(page, size);
+        Page<RequestsEntity> pageRequests = requestsRepository.findAll(paging);
+        List<RequestsEntity> requests = pageRequests.getContent();
 
-            Map<String, Object> response = new HashMap<>();
-            response.put("requests", requests);
-            response.put("currentPage", pageRequests.getNumber());
-            response.put("totalItems", pageRequests.getTotalElements());
-            response.put("totalPages", pageRequests.getTotalPages());
+        MaterialRequestsPageInfo materialRequestPageInfo = MaterialRequestsPageInfo
+                .builder()
+                .requests(requests)
+                .totalElements(pageRequests.getTotalElements())
+                .totalPages(pageRequests.getTotalPages())
+                .currentPage(pageRequests.getNumber())
+                .build();
 
-            return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(materialRequestPageInfo, HttpStatus.OK);
 
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
 }
 
