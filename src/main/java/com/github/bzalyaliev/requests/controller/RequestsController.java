@@ -91,7 +91,6 @@ public class RequestsController {
                 .build();
 
         return new ResponseEntity<>(materialRequestPageInfo, HttpStatus.OK);
-
     }
 }
 
