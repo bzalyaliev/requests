@@ -10,14 +10,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.Order;
 import javax.validation.Valid;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +32,15 @@ import java.util.Map;
 @Validated
 public class RequestsController {
     private final RequestsRepository requestsRepository;
+
+    private Sort.Direction getSortDirection(String direction) {
+        if (direction.equals("asc")) {
+            return Sort.Direction.ASC;
+        } else if (direction.equals("desc")) {
+            return Sort.Direction.DESC;
+        }
+        return Sort.Direction.ASC;
+    }
 
     @PostMapping(value = "/request")
     @ResponseStatus(HttpStatus.CREATED)
@@ -77,8 +89,25 @@ public class RequestsController {
     public ResponseEntity<MaterialRequestsPageInfo> getAllRequests(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size
+            /*@RequestParam(defaultValue = "status,desc") String[] sortQueryParamPart*/
     ) {
-        Pageable paging = PageRequest.of(page, size);
+
+        /*List<Order> orders = new ArrayList<>();
+
+        if (sortQueryParamPart[0].contains(",")) {
+            // will sort more than 2 fields
+            // sortOrder="field, direction"
+            for (String sortOrder : sortQueryParamPart) {
+                String[] splitSortQueryParamPart = sortOrder.split(",");
+                orders.add(new Order(getSortDirection(splitSortQueryParamPart[1]), splitSortQueryParamPart[0]));
+            }
+        } else {
+            // sort=[field, direction]
+            orders.add(new Order(getSortDirection(sortQueryParamPart[1]), sortQueryParamPart[0]));
+        }
+        List<MaterialRequests> materialRequests = new ArrayList<MaterialRequests>();*/
+
+        Pageable paging = PageRequest.of(page, size /*, Sort.by(orders)*/);
         Page<RequestsEntity> pageRequests = requestsRepository.findAll(paging);
         List<RequestsEntity> requests = pageRequests.getContent();
 
@@ -93,7 +122,4 @@ public class RequestsController {
         return new ResponseEntity<>(materialRequestPageInfo, HttpStatus.OK);
     }
 }
-
-
-
 

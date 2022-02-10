@@ -21,8 +21,8 @@ public class MaterialRequestsExceptionHandler extends ResponseEntityExceptionHan
 
     @ExceptionHandler()
     public ResponseEntity<ErrorResponse> handle(Exception exception) {
-        Integer code = exceptionToResponseCode.get(exception.getClass());
         if (exceptionToResponseCode.containsKey(exception.getClass())) {
+            Integer code = exceptionToResponseCode.get(exception.getClass());
             return ResponseEntity.status(code)
                     .body(ErrorResponse.builder()
                             .type(exception.getClass().getSimpleName())
