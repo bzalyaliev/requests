@@ -68,7 +68,7 @@ class MaterialRequestsControllerTest {
             .comments("My comment for testing")
             .build();
 
-    private final MaterialRequests updateMaterialRequests = MaterialRequests
+    private final MaterialRequests patchMaterialRequests = MaterialRequests
             .builder()
             .date(ZonedDateTime.now())
             .status(Status.DONE)
@@ -159,11 +159,11 @@ class MaterialRequestsControllerTest {
     }
 
     @Test
-    void itUpdatesRequest() {
+    void itPatchesRequest() {
         requestsEntity = repository.save(requestsEntity);
         given()
                 .contentType(ContentType.JSON)
-                .body(updateMaterialRequests)
+                .body(patchMaterialRequests)
                 .when()
                 .patch("/request/" + requestsEntity.getId().toString())
                 .then()
@@ -186,7 +186,7 @@ class MaterialRequestsControllerTest {
         requestsEntity = repository.save(requestsEntity);
         given()
                 .contentType(ContentType.JSON)
-                .body(updateMaterialRequests)
+                .body(patchMaterialRequests)
                 .when()
                 .get("/request/10")
                 .then()
@@ -238,7 +238,7 @@ class MaterialRequestsControllerTest {
     }
 
     @Test
-    void itUpdatesNullRequest() {
+    void itPatchesNullRequest() {
         requestsEntity = repository.save(requestsEntity);
         given()
                 .contentType(ContentType.JSON)
