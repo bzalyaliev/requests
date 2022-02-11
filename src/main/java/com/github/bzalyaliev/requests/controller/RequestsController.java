@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -18,9 +19,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 
 @RestController
@@ -78,6 +78,7 @@ public class RequestsController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size
     ) {
+
         Pageable paging = PageRequest.of(page, size);
         Page<RequestsEntity> pageRequests = requestsRepository.findAll(paging);
         List<RequestsEntity> requests = pageRequests.getContent();
@@ -91,10 +92,6 @@ public class RequestsController {
                 .build();
 
         return new ResponseEntity<>(materialRequestPageInfo, HttpStatus.OK);
-
     }
 }
-
-
-
 

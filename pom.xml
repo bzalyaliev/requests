@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.github.bzalyaliev</groupId>
-    <artifactId>requests</artifactId>
+    <artifactId>material-requests</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>requests</name>
     <description>requests</description>

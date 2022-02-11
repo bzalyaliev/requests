@@ -121,6 +121,22 @@ class MaterialRequestsControllerTest {
     }
 
     @Test
+    void itReturnsNotFoundExceptionForNotFoundRequest() {
+        requestsEntity = repository.save(requestsEntity);
+        given()
+                .when()
+                .get("/request/10")
+                .then()
+                .log().all()
+                .statusCode(404)
+                .body(
+                        "type", equalTo("NotFoundException"),
+                        "detailedMessage", equalTo("Could not find request"),
+                        "status", equalTo(404));
+
+    }
+
+    @Test
     void itCreatesRequest() {
         given()
                 .contentType(ContentType.JSON)
@@ -140,6 +156,18 @@ class MaterialRequestsControllerTest {
                         "objective", equalTo("Test Carbon"),
                         "comments", equalTo("My comment for testing")
                 );
+    }
+
+    @Test
+    void itCreatesNullRequest() {
+        given()
+                .contentType(ContentType.JSON)
+                .body(nullMaterialRequests)
+                .when()
+                .post("/request")
+                .then()
+                .statusCode(400)
+        ;
     }
 
     @Test
@@ -166,28 +194,6 @@ class MaterialRequestsControllerTest {
     }
 
     @Test
-    void itDeletesRequest() {
-        requestsEntity = repository.save(requestsEntity);
-        given()
-                .when()
-                .delete("/request/" + requestsEntity.getId())
-                .then()
-                .statusCode(HttpStatus.SC_OK);
-    }
-
-    @Test
-    void itCreatesNullRequest() {
-        given()
-                .contentType(ContentType.JSON)
-                .body(nullMaterialRequests)
-                .when()
-                .post("/request")
-                .then()
-                .statusCode(400)
-        ;
-    }
-
-    @Test
     void itUpdatesNullRequest() {
         requestsEntity = repository.save(requestsEntity);
         given()
@@ -199,5 +205,53 @@ class MaterialRequestsControllerTest {
                 .statusCode(400)
         ;
     }
+
+    @Test
+    void itReturnsNotFoundExceptionForUpdateNotFoundRequest() {
+        requestsEntity = repository.save(requestsEntity);
+        given()
+                .contentType(ContentType.JSON)
+                .body(updateMaterialRequests)
+                .when()
+                .patch("/request/10")
+                .then()
+                .log().all()
+                .statusCode(404)
+                .body(
+                        "type", equalTo("NotFoundException"),
+                        "detailedMessage", equalTo("Could not find request"),
+                        "status", equalTo(404));
+
+    }
+
+    @Test
+    void itDeletesRequest() {
+        requestsEntity = repository.save(requestsEntity);
+        given()
+                .when()
+                .delete("/request/" + requestsEntity.getId())
+                .then()
+                .statusCode(HttpStatus.SC_OK);
+    }
+
+    @Test
+    void itReturnsInternalServerErrorForDeleteNotFoundRequest() {
+        requestsEntity = repository.save(requestsEntity);
+        given()
+                .when()
+                .delete("/request/10")
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR)
+                .body(
+                        "type", equalTo("EmptyResultDataAccessException"),
+                        "detailedMessage", equalTo("No class com.github.bzalyaliev.requests.repository.RequestsEntity entity with id 10 exists!"),
+                        "status", equalTo(500));
+
+    }
+
+
+
+
 }
 
