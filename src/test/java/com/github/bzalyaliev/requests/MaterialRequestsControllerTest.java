@@ -68,7 +68,7 @@ class MaterialRequestsControllerTest {
             .comments("My comment for testing")
             .build();
 
-    private final MaterialRequests patchMaterialRequests = MaterialRequests
+    private final MaterialRequests updateMaterialRequests = MaterialRequests
             .builder()
             .date(ZonedDateTime.now())
             .status(Status.DONE)
@@ -159,11 +159,23 @@ class MaterialRequestsControllerTest {
     }
 
     @Test
-    void itPatchesRequest() {
+    void itCreatesNullRequest() {
+        given()
+                .contentType(ContentType.JSON)
+                .body(nullMaterialRequests)
+                .when()
+                .post("/request")
+                .then()
+                .statusCode(400)
+        ;
+    }
+
+    @Test
+    void itUpdatesRequest() {
         requestsEntity = repository.save(requestsEntity);
         given()
                 .contentType(ContentType.JSON)
-                .body(patchMaterialRequests)
+                .body(updateMaterialRequests)
                 .when()
                 .patch("/request/" + requestsEntity.getId().toString())
                 .then()
@@ -182,13 +194,26 @@ class MaterialRequestsControllerTest {
     }
 
     @Test
+    void itUpdatesNullRequest() {
+        requestsEntity = repository.save(requestsEntity);
+        given()
+                .contentType(ContentType.JSON)
+                .body(nullMaterialRequests)
+                .when()
+                .patch("/request/" + requestsEntity.getId().toString())
+                .then()
+                .statusCode(400)
+        ;
+    }
+
+    @Test
     void itReturnsNotFoundExceptionForUpdateNotFoundRequest() {
         requestsEntity = repository.save(requestsEntity);
         given()
                 .contentType(ContentType.JSON)
-                .body(patchMaterialRequests)
+                .body(updateMaterialRequests)
                 .when()
-                .get("/request/10")
+                .patch("/request/10")
                 .then()
                 .log().all()
                 .statusCode(404)
@@ -225,29 +250,8 @@ class MaterialRequestsControllerTest {
 
     }
 
-    @Test
-    void itCreatesNullRequest() {
-        given()
-                .contentType(ContentType.JSON)
-                .body(nullMaterialRequests)
-                .when()
-                .post("/request")
-                .then()
-                .statusCode(400)
-        ;
-    }
 
-    @Test
-    void itPatchesNullRequest() {
-        requestsEntity = repository.save(requestsEntity);
-        given()
-                .contentType(ContentType.JSON)
-                .body(nullMaterialRequests)
-                .when()
-                .patch("/request/" + requestsEntity.getId().toString())
-                .then()
-                .statusCode(400)
-        ;
-    }
+
+
 }
 
