@@ -7,6 +7,8 @@ import com.github.bzalyaliev.requests.repository.RequestsEntity;
 import com.github.bzalyaliev.requests.repository.RequestsRepository;
 import com.github.bzalyaliev.requests.repository.Status;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,12 +17,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
+
 
 import javax.validation.Valid;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
-
 
 
 @RestController
@@ -29,6 +33,15 @@ import java.util.List;
 @Validated
 public class RequestsController {
     private final RequestsRepository requestsRepository;
+
+    private Sort.Direction getSortDirection(String direction) {
+        if (direction.equals("asc")) {
+            return Sort.Direction.ASC;
+        } else if (direction.equals("desc")) {
+            return Sort.Direction.DESC;
+        }
+        return Sort.Direction.ASC;
+    }
 
     @PostMapping(value = "/request")
     @ResponseStatus(HttpStatus.CREATED)
@@ -76,10 +89,26 @@ public class RequestsController {
     @GetMapping("/requests")
     public ResponseEntity<MaterialRequestsPageInfo> getAllRequests(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "status,asc", name = "sort") String[] sortQueries
     ) {
 
-        Pageable paging = PageRequest.of(page, size);
+        List<Order> orders = new ArrayList<>();
+
+        if (sortQueries[0].contains(",")) {
+            for (String sortQuery : sortQueries) {
+                String[] splitSortQuery = sortQuery.split(",");
+                if (!splitSortQuery[1].isEmpty()) {
+                    orders.add(new Order(getSortDirection(splitSortQuery[1]), splitSortQuery[0]));
+                } else {
+                    orders.add(new Order(Sort.Direction.DESC, splitSortQuery[0]));
+                }
+            }
+        } else {
+            orders.add(new Order(getSortDirection(sortQueries[1]), sortQueries[0]));
+        }
+
+        Pageable paging = PageRequest.of(page, size, Sort.by(orders));
         Page<RequestsEntity> pageRequests = requestsRepository.findAll(paging);
         List<RequestsEntity> requests = pageRequests.getContent();
 
