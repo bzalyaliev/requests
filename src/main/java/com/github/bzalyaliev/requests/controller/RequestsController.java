@@ -90,10 +90,10 @@ public class RequestsController {
     public ResponseEntity<MaterialRequestsPageInfo> getAllRequests(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
-            @RequestParam(defaultValue = "status,asc", name = "sort") String[] sortQueries
+            @RequestParam(defaultValue = "status,asc", name = "sort") List<String> sortQueries
     ) {
 
-        List<Order> orders = new ArrayList<>();
+        List<Order> orders = SortingUtil.sortQueriesToOrder(sortQueries);
 
         if (sortQueries[0].contains(",")) {
             for (String sortQuery : sortQueries) {
