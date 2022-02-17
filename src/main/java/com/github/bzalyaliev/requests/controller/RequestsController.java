@@ -25,6 +25,8 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -33,15 +35,6 @@ import java.util.List;
 @Validated
 public class RequestsController {
     private final RequestsRepository requestsRepository;
-
-    private Sort.Direction getSortDirection(String direction) {
-        if (direction.equals("asc")) {
-            return Sort.Direction.ASC;
-        } else if (direction.equals("desc")) {
-            return Sort.Direction.DESC;
-        }
-        return Sort.Direction.ASC;
-    }
 
     @PostMapping(value = "/request")
     @ResponseStatus(HttpStatus.CREATED)
@@ -90,23 +83,10 @@ public class RequestsController {
     public ResponseEntity<MaterialRequestsPageInfo> getAllRequests(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
-            @RequestParam(defaultValue = "status,asc", name = "sort") List<String> sortQueries
+            @RequestParam("sort") String[] sortQueries
     ) {
 
         List<Order> orders = SortingUtil.sortQueriesToOrder(sortQueries);
-
-        if (sortQueries[0].contains(",")) {
-            for (String sortQuery : sortQueries) {
-                String[] splitSortQuery = sortQuery.split(",");
-                if (!splitSortQuery[1].isEmpty()) {
-                    orders.add(new Order(getSortDirection(splitSortQuery[1]), splitSortQuery[0]));
-                } else {
-                    orders.add(new Order(Sort.Direction.DESC, splitSortQuery[0]));
-                }
-            }
-        } else {
-            orders.add(new Order(getSortDirection(sortQueries[1]), sortQueries[0]));
-        }
 
         Pageable paging = PageRequest.of(page, size, Sort.by(orders));
         Page<RequestsEntity> pageRequests = requestsRepository.findAll(paging);

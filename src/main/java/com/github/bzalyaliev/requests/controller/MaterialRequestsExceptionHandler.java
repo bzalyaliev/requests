@@ -16,7 +16,8 @@ public class MaterialRequestsExceptionHandler extends ResponseEntityExceptionHan
 
     private final Map<Class<? extends Exception>, Integer> exceptionToResponseCode = Map.of(
             HttpClientErrorException.BadRequest.class, 400,
-            NotFoundException.class, 404
+            NotFoundException.class, 404,
+            BadRequestException.class, 400
     );
 
     @ExceptionHandler()
