@@ -1,66 +1,38 @@
-const moment = require('moment');
-//see https://react-data-table-component.netlify.app/?path=/docs/api-columns--page
-/*export const columns = React.useMemo(
-    () => [
-        {
-            Header: 'ID заявки',
-            selector: 'id'
-        },
-        {
-            Header: 'Дата заявки',
-            selector: 'date'
-        },
-        {
-            Header: 'Статус',
-            selector: row => row.status,
-            width: '120px'
-        },
-    ], [])*/
-
-export const columns = [
+export const tableHeader = [
     {
-        name: 'ID заявки',
-        selector: row => row.id,
-        width: '90px'
+        Header: 'ID заявки',
+        accessor: 'id'
     },
     {
-        name: 'Дата заявки',
-        selector: row => row.date,
-        width: '180px',
-        format: row => moment(row.date).format('DD-MM-YYYY HH:MM:SS')
+        Header: 'Дата заявки',
+        accessor: 'date'
     },
     {
-        name: 'Статус',
-        selector: row => row.status,
-        width: '120px'
+        Header: 'Статус',
+        accessor: 'status'
     },
     {
-        name: 'Инициатор',
-        selector: row => row.originator,
-        width: '100px'
+        Header: 'Инициатор',
+        accessor: 'originator'
     },
     {
-        name: 'Тип',
-        selector: row => row.type,
-        width: '100px'
+        Header: 'Тип',
+        accessor: 'type'
     },
     {
-        name: 'Масса',
-        selector: row => row.mass,
-        width: '100px'
+        Header: 'Масса',
+        accessor: 'mass'
     },
     {
-        name: 'Срок завершения',
-        selector: row => row.deadline,
-        format: row => moment(row.deadline).format('DD-MM-YYYY HH:MM:SS'),
-        width: '200px'
+        Header: 'Срок завершения',
+        accessor: 'deadline'
     },
     {
-        name: 'Задача',
-        selector: row => row.objective,
+        Header: 'Задача',
+        accessor: 'objective'
     },
     {
-        name: 'Комментарии',
-        selector: row => row.comments,
-    },
+        Header: 'Комментарии',
+        accessor: 'comments',
+    }
 ]
