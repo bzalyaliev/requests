@@ -7,6 +7,8 @@ import com.github.bzalyaliev.requests.repository.RequestsEntity;
 import com.github.bzalyaliev.requests.repository.RequestsRepository;
 import com.github.bzalyaliev.requests.repository.Status;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,12 +17,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
+
 
 import javax.validation.Valid;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
-
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -76,10 +82,13 @@ public class RequestsController {
     @GetMapping("/requests")
     public ResponseEntity<MaterialRequestsPageInfo> getAllRequests(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam("sort") String[] sortQueries
     ) {
 
-        Pageable paging = PageRequest.of(page, size);
+        List<Order> orders = SortingUtil.sortQueriesToOrder(sortQueries);
+
+        Pageable paging = PageRequest.of(page, size, Sort.by(orders));
         Page<RequestsEntity> pageRequests = requestsRepository.findAll(paging);
         List<RequestsEntity> requests = pageRequests.getContent();
 
