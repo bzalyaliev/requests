@@ -25,7 +25,7 @@ import static org.hamcrest.Matchers.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class MaterialRequestsControllerTest {
 
-    private final ZonedDateTime deadline = ZonedDateTime.of(2022, 2, 1, 0, 0, 0, 0, ZoneId.systemDefault());
+    private final ZonedDateTime deadline = ZonedDateTime.of(2022, 5, 1, 0, 0, 0, 0, ZoneId.systemDefault());
     private final ZonedDateTime updateDeadline = ZonedDateTime.of(2022, 2, 14, 0, 0, 0, 0, ZoneId.systemDefault());
 
     private String currentDateFormatted() {
@@ -40,6 +40,42 @@ class MaterialRequestsControllerTest {
             .type(Type.FLAKES)
             .mass(29.7)
             .deadline(deadline)
+            .objective("Test Carbon")
+            .comments("My comment for testing")
+            .build();
+
+    RequestsEntity requestsEntityForSortingFirst = RequestsEntity
+            .builder()
+            .date(ZonedDateTime.now())
+            .status(Status.GENERATED)
+            .originator("Bulat Zalyaliev")
+            .type(Type.POWDER)
+            .mass(29.7)
+            .deadline(deadline)
+            .objective("Test Carbon")
+            .comments("My comment for testing")
+            .build();
+
+    RequestsEntity requestsEntityForSortingSecond = RequestsEntity
+            .builder()
+            .date(ZonedDateTime.now().plusMinutes(1))
+            .status(Status.DONE)
+            .originator("Bulat Zalyaliev")
+            .type(Type.POWDER)
+            .mass(29.7)
+            .deadline(deadline.minusMonths(1))
+            .objective("Test Carbon")
+            .comments("My comment for testing")
+            .build();
+
+    RequestsEntity requestsEntityForSortingThird = RequestsEntity
+            .builder()
+            .date(ZonedDateTime.now().plusMinutes(2))
+            .status(Status.DONE)
+            .originator("Bulat Zalyaliev")
+            .type(Type.POWDER)
+            .mass(29.7)
+            .deadline(deadline.plusMonths(1))
             .objective("Test Carbon")
             .comments("My comment for testing")
             .build();
@@ -99,6 +135,33 @@ class MaterialRequestsControllerTest {
     @Test
     void itReturnsRequests() {
         requestsEntity = repository.save(requestsEntity);
+        given()
+                .when()
+                .get("/requests")
+                .then()
+                .log().all()
+                .statusCode(200)
+                .body("totalElements", equalTo(1))
+                .body("currentPage", equalTo(0))
+                .body("totalPages", equalTo(1))
+                .body("requests.id[0]", equalTo(requestsEntity.getId().intValue()))
+                .body("requests.date[0]", lessThanOrEqualTo(currentDateFormatted()))
+                .body("requests.status[0]", equalTo(Status.GENERATED.name()))
+                .body("requests.originator[0]", equalTo("Bulat Zalyaliev"))
+                .body("requests.type[0]", equalTo(Type.FLAKES.name()))
+                .body("requests.mass[0]", equalTo(29.7F))
+                .body("requests.deadline[0]", equalTo(deadline.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)))
+                .body("requests.objective[0]", equalTo("Test Carbon"))
+                .body("requests.comments[0]", equalTo("My comment for testing"))
+        ;
+    }
+
+    @Test
+    void itReturnsSortedRequestsSortNotPassed() {
+        requestsEntity = repository.save(requestsEntityForSortingFirst);
+        requestsEntity = repository.save(requestsEntityForSortingSecond);
+        requestsEntity = repository.save(requestsEntityForSortingThird);
+
         given()
                 .when()
                 .get("/requests")
