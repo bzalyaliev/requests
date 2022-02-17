@@ -10,6 +10,7 @@ function Table({
                    fetchData,
                    loading,
                    pageCount: controlledPageCount,
+                   totalElements
                }) {
     const {
         getTableProps,
@@ -48,21 +49,6 @@ function Table({
 
     return (
         <>
-      <pre>
-        <code>
-          {JSON.stringify(
-              {
-                  pageIndex,
-                  pageSize,
-                  pageCount,
-                  canNextPage,
-                  canPreviousPage,
-              },
-              null,
-              2
-          )}
-        </code>
-      </pre>
             <table {...getTableProps()}>
                 <thead>
                 {headerGroups.map(headerGroup => (
@@ -99,7 +85,7 @@ function Table({
                         <td colSpan="10000">Loading...</td>
                     ) : (
                         <td colSpan="10000">
-                            Showing {page.length} of ~{controlledPageCount * pageSize}{' '}
+                            Showing {page.length} of {totalElements}{' '}
                             results
                         </td>
                     )}

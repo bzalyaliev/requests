@@ -2,7 +2,7 @@ import React from "react";
 import Home from "./pages/Home";
 import {Route, Routes} from "react-router";
 import NewRequestPage from "./pages/NewRequestPage";
-import RequestsPage from "./pages/NativeRequestsPage";
+import RequestsPage from "./pages/RequestsPage";
 
 /*Routes is used to be Switch*/
 const Router = () => {

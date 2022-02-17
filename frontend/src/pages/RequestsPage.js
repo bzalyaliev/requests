@@ -49,6 +49,7 @@ function RequestsPage() {
                 fetchData={fetchData}
                 loading={loading}
                 pageCount={pageCount}
+                totalElements={totalElements}
             />
         </Styles>
     )
