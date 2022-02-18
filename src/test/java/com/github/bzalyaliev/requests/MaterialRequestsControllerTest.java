@@ -44,42 +44,6 @@ class MaterialRequestsControllerTest {
             .comments("My comment for testing")
             .build();
 
-    RequestsEntity requestsEntityForSortingFirst = RequestsEntity
-            .builder()
-            .date(ZonedDateTime.now())
-            .status(Status.GENERATED)
-            .originator("Bulat Zalyaliev")
-            .type(Type.POWDER)
-            .mass(29.7)
-            .deadline(deadline)
-            .objective("Test Carbon")
-            .comments("My comment for testing")
-            .build();
-
-    RequestsEntity requestsEntityForSortingSecond = RequestsEntity
-            .builder()
-            .date(ZonedDateTime.now().plusMinutes(1))
-            .status(Status.DONE)
-            .originator("Bulat Zalyaliev")
-            .type(Type.POWDER)
-            .mass(29.7)
-            .deadline(deadline.minusMonths(1))
-            .objective("Test Carbon")
-            .comments("My comment for testing")
-            .build();
-
-    RequestsEntity requestsEntityForSortingThird = RequestsEntity
-            .builder()
-            .date(ZonedDateTime.now().plusMinutes(2))
-            .status(Status.DONE)
-            .originator("Bulat Zalyaliev")
-            .type(Type.POWDER)
-            .mass(29.7)
-            .deadline(deadline.plusMonths(1))
-            .objective("Test Carbon")
-            .comments("My comment for testing")
-            .build();
-
     private final MaterialRequests nullMaterialRequests = MaterialRequests
             .builder()
             .date(ZonedDateTime.now())
@@ -135,33 +99,6 @@ class MaterialRequestsControllerTest {
     @Test
     void itReturnsRequests() {
         requestsEntity = repository.save(requestsEntity);
-        given()
-                .when()
-                .get("/requests")
-                .then()
-                .log().all()
-                .statusCode(200)
-                .body("totalElements", equalTo(1))
-                .body("currentPage", equalTo(0))
-                .body("totalPages", equalTo(1))
-                .body("requests.id[0]", equalTo(requestsEntity.getId().intValue()))
-                .body("requests.date[0]", lessThanOrEqualTo(currentDateFormatted()))
-                .body("requests.status[0]", equalTo(Status.GENERATED.name()))
-                .body("requests.originator[0]", equalTo("Bulat Zalyaliev"))
-                .body("requests.type[0]", equalTo(Type.FLAKES.name()))
-                .body("requests.mass[0]", equalTo(29.7F))
-                .body("requests.deadline[0]", equalTo(deadline.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)))
-                .body("requests.objective[0]", equalTo("Test Carbon"))
-                .body("requests.comments[0]", equalTo("My comment for testing"))
-        ;
-    }
-
-    @Test
-    void itReturnsSortedRequestsSortNotPassed() {
-        requestsEntity = repository.save(requestsEntityForSortingFirst);
-        requestsEntity = repository.save(requestsEntityForSortingSecond);
-        requestsEntity = repository.save(requestsEntityForSortingThird);
-
         given()
                 .when()
                 .get("/requests")
