@@ -83,12 +83,16 @@ public class RequestsController {
     public ResponseEntity<MaterialRequestsPageInfo> getAllRequests(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
-            @RequestParam("sort") String[] sortQueries
+            @RequestParam(value = "sort", required = false) String[] sortQueries
     ) {
+        Pageable paging;
+        if (sortQueries == null) {
+            paging = PageRequest.of(page, size);
+        } else {
+            List<Order> orders = SortingUtil.sortQueriesToOrder(sortQueries);
+            paging = PageRequest.of(page, size, Sort.by(orders));
+        }
 
-        List<Order> orders = SortingUtil.sortQueriesToOrder(sortQueries);
-
-        Pageable paging = PageRequest.of(page, size, Sort.by(orders));
         Page<RequestsEntity> pageRequests = requestsRepository.findAll(paging);
         List<RequestsEntity> requests = pageRequests.getContent();
 
