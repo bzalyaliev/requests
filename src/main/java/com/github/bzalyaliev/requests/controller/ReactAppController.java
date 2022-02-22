@@ -14,7 +14,7 @@ public class ReactAppController {
 	 '/{x:[\\w\\-]+}' - matches everything up to the second \. Eg. \foo
 	 '/{x:^(?!api$).*$}/*{y:[\\w\\-]+} - matches everything that doesn't start with api. Eg. \foo\bar?page=1
 	 **/
-	@RequestMapping(value = {"/", "/{x:[\\w\\-]+}", "/{x:^(?!api$).*$}/**/{y:[\\w\\-]+}"})
+	@RequestMapping(value = {"/", ""})
 	public String getIndex(HttpServletRequest request) {
 		return "index.html";
 	}
