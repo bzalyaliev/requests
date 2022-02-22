@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.ZoneId;
@@ -23,6 +24,8 @@ import static org.hamcrest.Matchers.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+
+@ActiveProfiles("integration-test")
 class MaterialRequestsControllerTest {
 
     private final ZonedDateTime deadline = ZonedDateTime.of(2022, 5, 1, 0, 0, 0, 0, ZoneId.systemDefault());
@@ -133,7 +136,6 @@ class MaterialRequestsControllerTest {
                         "type", equalTo("NotFoundException"),
                         "detailedMessage", equalTo("Could not find request"),
                         "status", equalTo(404));
-
     }
 
     @Test
@@ -144,6 +146,7 @@ class MaterialRequestsControllerTest {
                 .when()
                 .post("/request")
                 .then()
+                .log().all()
                 .statusCode(HttpStatus.SC_CREATED)
                 .body(
                         "id", notNullValue(),
@@ -166,6 +169,7 @@ class MaterialRequestsControllerTest {
                 .when()
                 .post("/request")
                 .then()
+                .log().all()
                 .statusCode(400)
         ;
     }
@@ -179,6 +183,7 @@ class MaterialRequestsControllerTest {
                 .when()
                 .patch("/request/" + requestsEntity.getId().toString())
                 .then()
+                .log().all()
                 .statusCode(HttpStatus.SC_OK)
                 .body(
                         "id", notNullValue(),
@@ -202,6 +207,7 @@ class MaterialRequestsControllerTest {
                 .when()
                 .patch("/request/" + requestsEntity.getId().toString())
                 .then()
+                .log().all()
                 .statusCode(400)
         ;
     }
@@ -231,6 +237,7 @@ class MaterialRequestsControllerTest {
                 .when()
                 .delete("/request/" + requestsEntity.getId())
                 .then()
+                .log().all()
                 .statusCode(HttpStatus.SC_OK);
     }
 
@@ -247,11 +254,6 @@ class MaterialRequestsControllerTest {
                         "type", equalTo("EmptyResultDataAccessException"),
                         "detailedMessage", equalTo("No class com.github.bzalyaliev.requests.repository.RequestsEntity entity with id 10 exists!"),
                         "status", equalTo(500));
-
     }
-
-
-
-
 }
 
