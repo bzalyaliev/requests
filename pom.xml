@@ -37,8 +37,8 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -62,6 +62,19 @@
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bootstrap</artifactId>
+            <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-bootstrap -->
+            <version>3.1.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.playtika.testcontainers/embedded-postgresql -->
+        <dependency>
+            <groupId>com.playtika.testcontainers</groupId>
+            <artifactId>embedded-postgresql</artifactId>
+            <version>2.0.20</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
