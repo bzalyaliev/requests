@@ -17,7 +17,7 @@ function RequestsPage() {
 
     const fetchData = React.useCallback(({pageSize, pageIndex}) => {
         setLoading(true)
-        fetch(`/api/requests?page=${pageIndex}&size=${pageSize}`)
+        fetch(`/api/requests?page=${pageIndex}&size=${pageSize}&sort=status,asc`)
             .then(response => {
                 if (response.status !== 200) {
                     throw {
