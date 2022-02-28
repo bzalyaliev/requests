@@ -1,3 +1,7 @@
+### Description 
+
+* Библиотека и пример, который был использован для таблицы: https://react-table.tanstack.com/docs/examples/pagination-controlled
+
 ### How to run as standalone app
 
 ```shell

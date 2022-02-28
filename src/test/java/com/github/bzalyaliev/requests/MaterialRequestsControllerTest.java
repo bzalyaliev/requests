@@ -1,13 +1,23 @@
 package com.github.bzalyaliev.requests;
 
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.hamcrest.Matchers.notNullValue;
+
 import com.github.bzalyaliev.requests.repository.RequestsEntity;
 import com.github.bzalyaliev.requests.repository.RequestsRepository;
 import com.github.bzalyaliev.requests.repository.Status;
 import com.github.bzalyaliev.requests.repository.Type;
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
+
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.apache.http.HttpStatus;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,16 +25,11 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-
 @ActiveProfiles("integration-test")
 class MaterialRequestsControllerTest {
 
@@ -104,7 +109,7 @@ class MaterialRequestsControllerTest {
         requestsEntity = repository.save(requestsEntity);
         given()
                 .when()
-                .get("/requests")
+                .get("/api/requests")
                 .then()
                 .log().all()
                 .statusCode(200)
@@ -128,7 +133,7 @@ class MaterialRequestsControllerTest {
         requestsEntity = repository.save(requestsEntity);
         given()
                 .when()
-                .get("/request/10")
+                .get("/api/request/10")
                 .then()
                 .log().all()
                 .statusCode(404)
@@ -144,7 +149,7 @@ class MaterialRequestsControllerTest {
                 .contentType(ContentType.JSON)
                 .body(materialRequests)
                 .when()
-                .post("/request")
+                .post("/api/request")
                 .then()
                 .log().all()
                 .statusCode(HttpStatus.SC_CREATED)
@@ -167,7 +172,7 @@ class MaterialRequestsControllerTest {
                 .contentType(ContentType.JSON)
                 .body(nullMaterialRequests)
                 .when()
-                .post("/request")
+                .post("/api/request")
                 .then()
                 .log().all()
                 .statusCode(400)
@@ -181,7 +186,7 @@ class MaterialRequestsControllerTest {
                 .contentType(ContentType.JSON)
                 .body(updateMaterialRequests)
                 .when()
-                .patch("/request/" + requestsEntity.getId().toString())
+                .patch("/api/request/" + requestsEntity.getId().toString())
                 .then()
                 .log().all()
                 .statusCode(HttpStatus.SC_OK)
@@ -205,7 +210,7 @@ class MaterialRequestsControllerTest {
                 .contentType(ContentType.JSON)
                 .body(nullMaterialRequests)
                 .when()
-                .patch("/request/" + requestsEntity.getId().toString())
+                .patch("/api/request/" + requestsEntity.getId().toString())
                 .then()
                 .log().all()
                 .statusCode(400)
@@ -219,7 +224,7 @@ class MaterialRequestsControllerTest {
                 .contentType(ContentType.JSON)
                 .body(updateMaterialRequests)
                 .when()
-                .patch("/request/10")
+                .patch("/api/request/10")
                 .then()
                 .log().all()
                 .statusCode(404)
@@ -235,7 +240,7 @@ class MaterialRequestsControllerTest {
         requestsEntity = repository.save(requestsEntity);
         given()
                 .when()
-                .delete("/request/" + requestsEntity.getId())
+                .delete("/api/request/" + requestsEntity.getId())
                 .then()
                 .log().all()
                 .statusCode(HttpStatus.SC_OK);
@@ -246,7 +251,7 @@ class MaterialRequestsControllerTest {
         requestsEntity = repository.save(requestsEntity);
         given()
                 .when()
-                .delete("/request/10")
+                .delete("/api/request/10")
                 .then()
                 .log().all()
                 .statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR)
