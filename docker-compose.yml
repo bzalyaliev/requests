@@ -1,0 +1,20 @@
+version: '1'
+
+services:
+  postgres:
+    image: 'postgres:13'
+    container_name: 'requests-postgresql'
+    environment:
+      - 'POSTGRES_USER=postgres'
+      - 'POSTGRES_PASSWORD=my_password'
+      - 'POSTGRES_DB=requests'
+
+  app:
+    image: 'requests:latest'
+    container_name: 'requests'
+    depends_on:
+      - postgres
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/requests
+    ports:
+      - '8080:8080'
