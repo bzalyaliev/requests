@@ -55,7 +55,7 @@ java -jar ./target/requests-0.0.1-SNAPSHOT.jar
 
 * Enjoy at http://localhost:8080
 
-3. With Docker
+3. As local with Docker (needs to create docker-compose file)
 
 * Build jar
 
