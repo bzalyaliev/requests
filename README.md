@@ -50,8 +50,27 @@ java -jar ./target/requests-0.0.1-SNAPSHOT.jar
 
 * Enjoy at http://localhost:8080
 
-3. As local with Docker (needs to create docker-compose file)
-
+3. As local network with Docker 
+* create docker-compose file
+```shell
+version: "3.7"
+ services:
+   material-requests:
+     build: .
+     restart: always
+     ports:
+       - 8080:8080
+     depends_on:
+       - postgres_db
+   postgres_db:
+     image: "postgres:13"
+     restart: always
+     ports:
+       - 5432:54320
+     environment:
+       POSTGRES_DB: requests
+       POSTGRES_PASSWORD: [TYPE YOUR DB PASSWORD HERE]
+```
 * Build jar and create docker image of spring boot application (with jib)
 
 ```shell
@@ -80,3 +99,30 @@ docker run -p 8090:8080 --network=network_name -e SPRING_DATASOURCE_URL=jdbc:pos
 ```
 * Enjoy at http://localhost:8090
 
+### How to deploy
+My pipeline:
+
+* docker-compose file should be on server (from requests-infrastructure repository on my github)
+
+* login to the docker hub
+```shell
+docker login 
+```
+* build jar and docker image of Spring Boot app with name [DOCKER ID]/[DOCKER HUB REPOSITORY NAME]:[TAG]
+
+```shell
+./mvnw jib:dockerBuild -Djib.to.image=[DOCKER ID]/[DOCKER HUB REPOSITORY NAME]:[TAG]
+```
+* push image with app to the Docker Hub
+```shell
+docker push [DOCKER ID]/[DOCKER HUB REPOSITORY NAME]:[TAG]
+```
+* on the server pull image with app 
+```shell
+docker pull [DOCKER ID]/[DOCKER HUB REPOSITORY NAME]:[TAG]
+```
+
+* go to the folder with docker-compose file and run containers with database and app
+```shell
+docker-compose up -d
+```
