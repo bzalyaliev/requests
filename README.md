@@ -50,7 +50,7 @@ java -jar ./target/requests-0.0.1-SNAPSHOT.jar
 
 * Enjoy at http://localhost:8080
 
-3. As local network with Docker 
+3. As local with Docker containers (app and db) in one network 
 * create docker-compose file
 ```shell
 version: "3.7"
