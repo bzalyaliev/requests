@@ -126,3 +126,9 @@ docker pull [DOCKER ID]/[DOCKER HUB REPOSITORY NAME]:[TAG]
 ```shell
 docker-compose up -d
 ```
+* check get requests on server
+```shell
+curl http://localhost:8080/api/requests
+```
+
+* http://hostname:8080/api/requests - enjoy
