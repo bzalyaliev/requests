@@ -2,7 +2,7 @@
 <configuration>
     <springProfile name="prod">
         <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-            <file>./logFile.log</file>
+            <file>/logs/logFile.log</file>
             <append>true</append>
             <immediateFlush>true</immediateFlush>
             <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
