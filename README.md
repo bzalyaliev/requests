@@ -1,11 +1,33 @@
 # Requests
-Service for managing requests for material. Based on Java, Spring Boot, PostgreSQL, React, Docker.
+Service for managing requests for material.
 
-### Endpoints
+----------------------------------
+###Technological stack
 
-hostname/request
+####Backend:
+- Java 11. 
+- Spring Boot. 
+- PostgreSQL.
 
-Form with fields:
+####Frontend:
+- React.Js.
+
+####Containerization:
+- Docker.
+
+####Testing:
+- Testcontainers-spring-boot.
+- Rest-assured.
+- JUnit5.
+
+####Repositories:
+- DockerHub.
+----------------------------------
+###Endpoints
+
+####hostname/request
+
+expected form with fields
 - Date (current date).
 - Originator.
 - Type.
@@ -16,10 +38,9 @@ Form with fields:
 - Button"Send request".
 All fields except Comments are required
 
+####hostname/requests
 
-hostname/requests
-
-Table Waiting List with columns:
+Expected table with columns:
 - No
 - Date
 - Status (Generated, In Work, Done, Cancelled, Rejected)
@@ -33,13 +54,38 @@ Table Waiting List with columns:
 ----------------------------------
 ### How to run
 
-1. Idea:
+####1. Docker container with database:
+
+- Run container "my_postgres" with PostgreSQL:
+```
+docker run -d --name my_postgres -v my_dbdata:/var/lib/postgresql/data -p 54320:5432 -e POSTGRES_PASSWORD=my_password postgres:13
+```
+
+- For connection to container "my_postgres":
+
+Mac OS:
+```
+sudo docker exec -it my_postgres psql -U postgres
+```                 
+
+Windows/GitBash:
+```
+winpty docker exec -it my_postgres psql -U postgres
+```
+
+- For creation database "requests":
+```
+CREATE DATABASE requests;
+```
+
+
+####2. Application from Idea:
 
 * Run RequestsApplication class as usual
 * Build frontend-for-backend running from the root dir: `sh ./infrastructure/rebuild-frontend-for-backend.sh`
 * Enjoy at http://localhost:8080
 
-2. As standalone jar
+####3. Application as standalone jar
 
 * Build it
 ```shell
@@ -50,86 +96,83 @@ java -jar ./target/requests-0.0.1-SNAPSHOT.jar
 
 * Enjoy at http://localhost:8080
 
-3. As local with Docker containers (app and db) in one network 
-* create docker-compose file
-```shell
-version: "3.7"
- services:
-   material-requests:
-     build: .
-     restart: always
-     ports:
-       - 8080:8080
-     depends_on:
-       - postgres_db
-   postgres_db:
-     image: "postgres:13"
-     restart: always
-     ports:
-       - 5432:54320
-     environment:
-       POSTGRES_DB: requests
-       POSTGRES_PASSWORD: [TYPE YOUR DB PASSWORD HERE]
-```
-* Build jar and create docker image of spring boot application (with jib)
+####4. Application in Docker container
 
-```shell
-./mvnw jib:dockerBuild -Djib.to.image=[IMAGE NAME]:[IMAGE TAG]
+- Build jar:
+```
+./mvnw clean package
 ```
 
-* Create network with name "network_name"
-```shell
+- Build image of application with name "requests" and tag "latest":
+ ```
+./mvnw jib:dockerBuild -Djib.to.image=requests -Djib.to.tags=latest
+ ```
+
+- Create network "network_name":
+```
 docker network create --driver bridge network_name
 ```
 
-* Build and run docker container with postgresql with name my_postgres
-```shell
-docker run -d --name my_postgres -v my_dbdata:/var/lib/postgresql/data -p 54320:5432 -e POSTGRES_PASSWORD=my_password postgres:13
+- Run container with database and application in one network "network_name":
+
 ```
-
-* Run docker container with postgresql in network = "network_name"
-
-```shell
 docker run --name my_postgres --network=network_name -e POSTGRES_PASSWORD=my_password -d postgres:13
+````
+
+```
+docker run -p 8080:8080 --network=network_name -e SPRING_DATASOURCE_URL=jdbc:postgresql://my_postgres:5432/requests requests:latest
 ```
 
-* Run docker image of application [IMAGE NAME]:[IMAGE TAG] on 8090 port in "network_name" network
-```shell
-docker run -p 8090:8080 --network=network_name -e SPRING_DATASOURCE_URL=jdbc:postgresql://my_postgres:5432/requests [IMAGE NAME]:[IMAGE TAG]
-```
-* Enjoy at http://localhost:8090
+- Enjoy at http://localhost:8080/
+
 
 ### How to deploy
-My pipeline:
 
-* docker-compose file should be on server (from requests-infrastructure repository on my github)
+#### Server preparation
 
-* login to the docker hub
-```shell
-docker login 
+1. Install Docker engine for your OS.
+2. Clone [requests-infrastructure](https://github.com/bzalyaliev/requests-infrastructure) repository on server
+3. Create file .env in root of requests-infrastructure and add:
 ```
-* build jar and docker image of Spring Boot app with name [DOCKER ID]/[DOCKER HUB REPOSITORY NAME]:[TAG]
+POSTGRES_USER=TYPE USERNAME HERE
+POSTGRES_PASSWORD=TYPE PASSWORD HERE
+```
+4. Install Nginx and use configure file from here [add link]
 
-```shell
-./mvnw jib:dockerBuild -Djib.to.image=[DOCKER ID]/[DOCKER HUB REPOSITORY NAME]:[TAG]
+#### On your machine:
+
+* build jar and docker image of Spring Boot with tag "latest":
+
 ```
-* push image with app to the Docker Hub
-```shell
-docker push [DOCKER ID]/[DOCKER HUB REPOSITORY NAME]:[TAG]
-```
-* on the server pull image with app 
-```shell
-docker pull [DOCKER ID]/[DOCKER HUB REPOSITORY NAME]:[TAG]
+./mvnw clean package
 ```
 
-* go to the folder with docker-compose file and run containers with database and app
-```shell
-docker-compose up -d
 ```
-* check get requests on server
-```shell
+docker login
+```
+
+```
+./mvnw jib:dockerBuild -Djib.to.image=bulatzalyaliev/requests -Djib.to.tags=latest
+```
+
+```
+docker push bulatzalyaliev/requests:latest
+
+```
+
+####On server:
+
+- update containers from dockerhub and run them
+```
+sudo docker pull bulatzalyaliev/requests:latest
+sudo docker-compose up -d
+```
+- Checking work with:
+
+```
 curl http://localhost:8080/api/requests
 ```
 
-* http://hostname:8080/api/requests - enjoy
-use your hostname
+- Enjoy at https://hostname
+
+
