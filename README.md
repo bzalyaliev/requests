@@ -2,32 +2,32 @@
 Service for managing requests for material.
 
 ----------------------------------
-###Technological stack
+### Technological stack
 
-####Backend:
+#### Backend:
 - Java 11. 
 - Spring Boot. 
 - PostgreSQL.
 
-####Frontend:
+#### Frontend:
 - React.Js.
 
-####Containerization:
+#### Containerization:
 - Docker.
 
-####Testing:
+#### Testing:
 - Testcontainers-spring-boot.
 - Rest-assured.
 - JUnit5.
 
-####Repositories:
+#### Repositories:
 - DockerHub.
 ----------------------------------
-###Endpoints
+### Endpoints
 
-####hostname/request
+#### hostname/request
 
-expected form with fields
+Expected form with fields:
 - Date (current date).
 - Originator.
 - Type.
@@ -38,7 +38,7 @@ expected form with fields
 - Button"Send request".
 All fields except Comments are required
 
-####hostname/requests
+#### hostname/requests
 
 Expected table with columns:
 - No
@@ -54,7 +54,7 @@ Expected table with columns:
 ----------------------------------
 ### How to run
 
-####1. Docker container with database:
+#### 1. Docker container with database:
 
 - Run container "my_postgres" with PostgreSQL:
 ```
@@ -79,13 +79,13 @@ CREATE DATABASE requests;
 ```
 
 
-####2. Application from Idea:
+#### 2. Application from Idea:
 
 * Run RequestsApplication class as usual
 * Build frontend-for-backend running from the root dir: `sh ./infrastructure/rebuild-frontend-for-backend.sh`
 * Enjoy at http://localhost:8080
 
-####3. Application as standalone jar
+#### 3. Application as standalone jar
 
 * Build it
 ```shell
@@ -96,7 +96,7 @@ java -jar ./target/requests-0.0.1-SNAPSHOT.jar
 
 * Enjoy at http://localhost:8080
 
-####4. Application in Docker container
+#### 4. Application in Docker container
 
 - Build jar:
 ```
@@ -137,7 +137,7 @@ docker run -p 8080:8080 --network=network_name -e SPRING_DATASOURCE_URL=jdbc:pos
 POSTGRES_USER=TYPE USERNAME HERE
 POSTGRES_PASSWORD=TYPE PASSWORD HERE
 ```
-4. Install Nginx and use configure file from here [add link]
+4. Install Nginx and use configure file from [here](https://github.com/bzalyaliev/requests-infrastructure/blob/main/nginx/requests.config)
 
 #### On your machine:
 
@@ -160,9 +160,9 @@ docker push bulatzalyaliev/requests:latest
 
 ```
 
-####On server:
+#### On server:
 
-- update containers from dockerhub and run them
+- update containers using new images from Dockerhub
 ```
 sudo docker pull bulatzalyaliev/requests:latest
 sudo docker-compose up -d
