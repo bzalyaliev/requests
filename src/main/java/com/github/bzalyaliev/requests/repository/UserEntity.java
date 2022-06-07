@@ -21,7 +21,7 @@ public class UserEntity {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    Long userId;
+    Long id;
 
     @Column(name = "createdAt", nullable = false)
     ZonedDateTime date;
@@ -40,6 +40,6 @@ public class UserEntity {
 
     @ManyToOne(optional = true)
     @JoinColumn(insertable = false, updatable = false, table = "auth_role", name="name")
-    Role role;
+    RoleEntity role;
 
 }

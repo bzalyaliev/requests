@@ -19,9 +19,9 @@ public class RoleEntity {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    Long roleId;
+    Long id;
 
     @Column(name = "name")
-    Role roleName;
+    Role name;
 }
 
