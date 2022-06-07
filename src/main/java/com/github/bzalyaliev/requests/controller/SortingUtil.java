@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.github.bzalyaliev.requests.exception.BadRequestException;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 

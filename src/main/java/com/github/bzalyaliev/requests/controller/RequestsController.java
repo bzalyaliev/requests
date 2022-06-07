@@ -1,21 +1,19 @@
 package com.github.bzalyaliev.requests.controller;
 
-import com.github.bzalyaliev.requests.model.MaterialRequests;
-import com.github.bzalyaliev.requests.model.MaterialRequestsPageInfo;
-import com.github.bzalyaliev.requests.repository.RequestsEntity;
+import com.github.bzalyaliev.requests.exception.NotFoundException;
+import com.github.bzalyaliev.requests.model.MaterialRequest;
+import com.github.bzalyaliev.requests.model.MaterialRequestsPageInfoResponse;
+import com.github.bzalyaliev.requests.repository.entity.RequestsEntity;
 import com.github.bzalyaliev.requests.repository.RequestsRepository;
-import com.github.bzalyaliev.requests.repository.Status;
+import com.github.bzalyaliev.requests.repository.entity.Status;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.validation.Valid;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -48,7 +46,7 @@ public class RequestsController {
 
     @PostMapping(value = "/request")
     @ResponseStatus(HttpStatus.CREATED)
-    public RequestsEntity newRequest(@Valid @RequestBody MaterialRequests materialRequests) {
+    public RequestsEntity newRequest(@Valid @RequestBody MaterialRequest materialRequests) {
         return requestsRepository.save(RequestsEntity.builder()
                 .date(ZonedDateTime.now(ZoneId.systemDefault()))
                 .status(Status.GENERATED)
@@ -74,7 +72,7 @@ public class RequestsController {
     }
 
     @PatchMapping(value = "/request/{id}")
-    public RequestsEntity patchBatch(@PathVariable Long id, @Valid @RequestBody MaterialRequests requests) {
+    public RequestsEntity patchBatch(@PathVariable Long id, @Valid @RequestBody MaterialRequest requests) {
         requestsRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Could not find request"));
 
@@ -90,7 +88,7 @@ public class RequestsController {
     }
 
     @GetMapping("/requests")
-    public ResponseEntity<MaterialRequestsPageInfo> getAllRequests(
+    public ResponseEntity<MaterialRequestsPageInfoResponse> getAllRequests(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
             @RequestParam(value = "sort", required = false) String[] sortQueries
@@ -106,7 +104,7 @@ public class RequestsController {
         Page<RequestsEntity> pageRequests = requestsRepository.findAll(paging);
         List<RequestsEntity> requests = pageRequests.getContent();
 
-        MaterialRequestsPageInfo materialRequestPageInfo = MaterialRequestsPageInfo
+        MaterialRequestsPageInfoResponse materialRequestPageInfo = MaterialRequestsPageInfoResponse
                 .builder()
                 .requests(requests)
                 .totalElements(pageRequests.getTotalElements())

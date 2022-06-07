@@ -5,10 +5,10 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.hamcrest.Matchers.notNullValue;
 
-import com.github.bzalyaliev.requests.repository.RequestsEntity;
+import com.github.bzalyaliev.requests.repository.entity.RequestsEntity;
 import com.github.bzalyaliev.requests.repository.RequestsRepository;
-import com.github.bzalyaliev.requests.repository.Status;
-import com.github.bzalyaliev.requests.repository.Type;
+import com.github.bzalyaliev.requests.repository.entity.Status;
+import com.github.bzalyaliev.requests.repository.entity.Type;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -257,7 +257,7 @@ class MaterialRequestsControllerTest {
                 .statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR)
                 .body(
                         "type", equalTo("EmptyResultDataAccessException"),
-                        "detailedMessage", equalTo("No class com.github.bzalyaliev.requests.repository.RequestsEntity entity with id 10 exists!"),
+                        "detailedMessage", equalTo("No class com.github.bzalyaliev.requests.repository.entity.RequestsEntity entity with id 10 exists!"),
                         "status", equalTo(500));
     }
 }

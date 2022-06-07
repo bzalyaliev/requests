@@ -1,19 +1,18 @@
 package com.github.bzalyaliev.requests.model;
 
-import com.github.bzalyaliev.requests.repository.Status;
-import com.github.bzalyaliev.requests.repository.Type;
+import com.github.bzalyaliev.requests.repository.entity.Status;
+import com.github.bzalyaliev.requests.repository.entity.Type;
 import lombok.Builder;
 import lombok.Value;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 
 @Value
 @Builder
-public class MaterialRequests {
+public class MaterialRequest {
 
     Status status;
 
@@ -35,5 +34,5 @@ public class MaterialRequests {
 
     String comments;
 
-    }
+}
 

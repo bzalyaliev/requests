@@ -1,5 +1,6 @@
 package com.github.bzalyaliev.requests.controller;
 
+import com.github.bzalyaliev.requests.exception.BadRequestException;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Sort;
 
