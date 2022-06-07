@@ -1,4 +1,4 @@
-package com.github.bzalyaliev.requests.controller;
+package com.github.bzalyaliev.requests.exception;
 
 public class BadRequestException extends RuntimeException {
     public BadRequestException(String message) {

@@ -1,4 +1,4 @@
-package com.github.bzalyaliev.requests.controller;
+package com.github.bzalyaliev.requests.model;
 
 import lombok.Builder;
 import lombok.Value;

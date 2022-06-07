@@ -2,7 +2,7 @@ package com.github.bzalyaliev.requests;
 
 import static org.assertj.core.api.Assertions.*;
 
-import com.github.bzalyaliev.requests.repository.RequestsEntity;
+import com.github.bzalyaliev.requests.repository.entity.RequestsEntity;
 import com.github.bzalyaliev.requests.repository.RequestsRepository;
 
 import org.junit.jupiter.api.Test;

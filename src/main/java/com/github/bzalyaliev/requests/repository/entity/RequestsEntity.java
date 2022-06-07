@@ -1,4 +1,4 @@
-package com.github.bzalyaliev.requests.repository;
+package com.github.bzalyaliev.requests.repository.entity;
 
 import java.time.ZonedDateTime;
 

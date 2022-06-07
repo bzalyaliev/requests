@@ -1,16 +1,14 @@
 package com.github.bzalyaliev.requests.model;
 
-import com.github.bzalyaliev.requests.repository.RequestsEntity;
+import com.github.bzalyaliev.requests.repository.entity.RequestsEntity;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Value;
 
 import java.util.List;
 
 @Builder
-@Data
 @Value
-public class MaterialRequestsPageInfo {
+public class MaterialRequestsPageInfoResponse {
     Long totalElements;
     int currentPage;
     int totalPages;

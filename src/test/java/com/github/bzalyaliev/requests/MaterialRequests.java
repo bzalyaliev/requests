@@ -1,7 +1,7 @@
 package com.github.bzalyaliev.requests;
 
-import com.github.bzalyaliev.requests.repository.Status;
-import com.github.bzalyaliev.requests.repository.Type;
+import com.github.bzalyaliev.requests.repository.entity.Status;
+import com.github.bzalyaliev.requests.repository.entity.Type;
 import lombok.Builder;
 import lombok.Value;
 
