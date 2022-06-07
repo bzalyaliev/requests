@@ -17,10 +17,10 @@ import javax.persistence.*;
 @Accessors(chain = true)
 public class RoleEntity {
     @Id
-    @Column(name = "roleId")
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long roleId;
 
-    @Column(name = "roleName")
+    @Column(name = "name")
     Role roleName;
 }

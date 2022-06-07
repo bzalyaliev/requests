@@ -18,7 +18,7 @@ import java.time.ZonedDateTime;
 @Accessors(chain = true)
 public class UserEntity {
     @Id
-    @Column(name = "userId")
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long userId;
 
@@ -38,7 +38,7 @@ public class UserEntity {
     String login;
 
     @ManyToOne(optional = true)
-    @JoinColumn(insertable = false, updatable = false, table = "auth_role", name="roleName")
+    @JoinColumn(insertable = false, updatable = false, table = "auth_role", name = "name")
     Role role;
 
 }
