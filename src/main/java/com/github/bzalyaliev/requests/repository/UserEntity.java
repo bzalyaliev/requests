@@ -9,6 +9,7 @@ import lombok.experimental.Accessors;
 import javax.persistence.*;
 import java.time.ZonedDateTime;
 
+//comment
 @Entity
 @Table(name = "auth_user")
 @Builder
