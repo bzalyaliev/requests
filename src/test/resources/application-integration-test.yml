@@ -3,3 +3,8 @@ spring:
     url: "jdbc:postgresql://${embedded.postgresql.host}:${embedded.postgresql.port}/${embedded.postgresql.database}"
     username: ${embedded.postgresql.user}
     password: ${embedded.postgresql.password}
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
