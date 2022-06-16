@@ -40,7 +40,7 @@ public class UserEntity {
     String login;
 
     @ManyToOne(optional = true)
-    @JoinColumn(insertable = false, updatable = false, table = "auth_role", name = "name")
+    @JoinColumn(name = "role", referencedColumnName = "id")
     RoleEntity role;
 
 }

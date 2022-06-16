@@ -21,6 +21,7 @@ public class UserRepositoryTest {
 
     @Autowired
     RoleRepository roleRepository;
+    @Autowired
     UserRepository userRepository;
 
     @Test
@@ -28,6 +29,8 @@ public class UserRepositoryTest {
         RoleEntity roleEntity = RoleEntity.builder()
                 .name(Role.USER)
                 .build();
+
+        RoleEntity savedRoleEntity = roleRepository.save(roleEntity);
 
         UserEntity userEntity = UserEntity.builder()
                 .date(ZonedDateTime.now())
@@ -38,7 +41,6 @@ public class UserRepositoryTest {
                 .role(roleEntity)
                 .build();
 
-        RoleEntity savedRoleEntity = roleRepository.save(roleEntity);
         UserEntity savedUserEntity = userRepository.save(userEntity);
 
         Optional<RoleEntity> roleEntityFromRepository = roleRepository.findById(savedRoleEntity.getId());
