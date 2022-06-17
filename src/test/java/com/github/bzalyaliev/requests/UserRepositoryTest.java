@@ -92,6 +92,26 @@ public class UserRepositoryTest {
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
 
+    @Test
+    public void itShouldNotRemoveRoleIfUserWithThatRoleExists() {
+        RoleEntity roleEntity = RoleEntity.builder()
+                .name(Role.USER)
+                .build();
 
+        RoleEntity savedRoleEntity = roleRepository.save(roleEntity);
 
+        UserEntity userEntity = UserEntity.builder()
+                .date(ZonedDateTime.now())
+                .firstName("Bulat")
+                .lastName("Zalyaliev")
+                .email("bulat@he.co")
+                .login("bulat")
+                .role(roleEntity)
+                .build();
+
+        UserEntity savedUserEntity = userRepository.save(userEntity);
+
+        assertThatThrownBy(() -> roleRepository.delete(roleEntity))
+                .isInstanceOf(DataIntegrityViolationException.class);
+    }
 }
