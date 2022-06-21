@@ -12,7 +12,6 @@ import java.time.ZonedDateTime;
 //comment
 @Entity
 @Table(name = "auth_user")
-@SecondaryTable(name = "auth_role")
 @Builder
 @Data
 @NoArgsConstructor
