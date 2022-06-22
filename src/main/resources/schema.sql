@@ -1,8 +1,8 @@
 CREATE SCHEMA IF NOT EXISTS requests;
 
-CREATE TABLE requests.requests
+CREATE TABLE IF NOT EXISTS requests.requests
 (
-    id         SERIAL PRIMARY KEY       NOT NULL,
+    id         SERIAL PRIMARY KEY,
     Date       TIMESTAMP with time zone NOT NULL,
     Status     VARCHAR                  NOT NULL,
     Originator VARCHAR                  NOT NULL,
@@ -14,21 +14,23 @@ CREATE TABLE requests.requests
 
 );
 
-CREATE TABLE requests.auth_user
+CREATE TABLE IF NOT EXISTS requests.auth_user
 (
     id         SERIAL PRIMARY KEY       NOT NULL,
-    createdAt  TIMESTAMP with time zone NULL,
-    firstName  VARCHAR                  NOT NULL,
-    secondName VARCHAR                  NOT NULL,
+    created_at  TIMESTAMP with time zone NOT NULL,
+    first_name  VARCHAR                  NOT NULL,
+    last_name VARCHAR                  NOT NULL,
     email      VARCHAR                  NOT NULL,
     login      VARCHAR                  NOT NULL,
-    role       VARCHAR                  NOT NULL,
-    FOREIGN KEY (role) REFERENCES auth_role (name)
-
+    role       INT                      NOT NULL
 );
 
-CREATE TABLE requests.auth_role
+CREATE TABLE IF NOT EXISTS requests.auth_role
 (
     id   SERIAL PRIMARY KEY NOT NULL,
     name VARCHAR            NOT NULL
 );
+
+ALTER TABLE requests.auth_user
+    ADD CONSTRAINT FK_role
+        FOREIGN KEY (role) REFERENCES requests.auth_role (id);

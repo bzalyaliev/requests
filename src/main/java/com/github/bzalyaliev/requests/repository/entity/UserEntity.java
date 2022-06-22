@@ -20,16 +20,16 @@ import java.time.ZonedDateTime;
 public class UserEntity {
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(name = "createdAt", nullable = false)
+    @Column(name = "created_at", nullable = false)
     ZonedDateTime date;
 
-    @Column(name = "firstName", nullable = false)
+    @Column(name = "first_name", nullable = false)
     String firstName;
 
-    @Column(name = "lastName", nullable = false)
+    @Column(name = "last_name", nullable = false)
     String lastName;
 
     @Column(name = "email", nullable = false)
@@ -39,7 +39,7 @@ public class UserEntity {
     String login;
 
     @ManyToOne(optional = true)
-    @JoinColumn(insertable = false, updatable = false, table = "auth_role", name="name")
+    @JoinColumn(name = "role", referencedColumnName = "id")
     RoleEntity role;
 
 }
