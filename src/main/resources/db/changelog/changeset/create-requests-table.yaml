@@ -4,6 +4,7 @@ databaseChangeLog:
       author: Bulat
       changes:
         - createTable:
+            schemaName: requests
             tableName: requests
             columns:
               - column:
