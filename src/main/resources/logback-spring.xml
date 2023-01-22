@@ -2,7 +2,7 @@
 <configuration>
     <springProfile name="prod">
         <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-            <file>/logs/logFile.log</file>
+            <file>./logs/logFile.log</file>
             <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
                 <!-- daily rollover -->
                 <fileNamePattern>logFile.%d{yyyy-MM-dd}.log</fileNamePattern>

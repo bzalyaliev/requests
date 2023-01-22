@@ -1,5 +1,0 @@
-<changeSet author="Bulat" id="create-requests-schema">
-    <sql dbms="postgresql" endDelimiter=";">
-        CREATE SCHEMA requests
-    </sql>
-</changeSet>
